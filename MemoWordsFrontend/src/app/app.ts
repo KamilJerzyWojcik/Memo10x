@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   imports: [],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss'
 })
 export class App {
   protected title = 'MemoWordsFrontend';
