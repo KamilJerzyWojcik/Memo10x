@@ -1,0 +1,47 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# AI Rules for MemoWords
+
+Projekt to aplikacja webowa w ktorej możemy przeglądać listę słow i ich tłumaczeń. Słowa dodawane są z formularza w dialogu w ktorym podajemy slowo w jezyku angielskim a po kliknieciu buttona za pomoca gpt generowane jest tlumacznie i po zapisaniu pojawia się na liscie. Aplikacja wymaga rejestracji i logowania i kazdy user ma swoją wlasna liste słów.
+
+## Tech Stack
+
+Backend
+- ASP.NET 9.0
+- .Net 9.0
+
+Database
+- Supabase SQL
+
+Frontend
+- Angular 20
+- SCSS
+
+## Project Structure
+
+When introducing changes to the project, always follow the directory structure below:
+
+- `./MemoWords` - solucja z projektami Backendu projektu
+- `./MemoWords/MemoWords.Api` - projekt główny API z kontrolerami
+- `./MemoWordsFrontend/src` - kod frontendu projektu
+- `./MemoWordsFrontend/src/app` - komponenty forntendu
+
+
+When modifying the directory structure, always update this section.
+
+## Coding practices
+
+### Guidelines for clean code
+
+- Use feedback from linters to improve the code when making changes.
+- Prioritize error handling and edge cases.
+- Handle errors and edge cases at the beginning of functions.
+- Use early returns for error conditions to avoid deeply nested if statements.
+- Place the happy path last in the function for improved readability.
+- Avoid unnecessary else statements; use if-return pattern instead.
+- Use guard clauses to handle preconditions and invalid states early.
+- Implement proper error logging and user-friendly error messages.
+- Consider using custom error types or error factories for consistent error handling.

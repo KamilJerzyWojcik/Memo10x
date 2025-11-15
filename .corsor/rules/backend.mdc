@@ -1,0 +1,15 @@
+---
+globs: *.cs
+alwaysApply: false
+---
+### Backend and Database
+
+- Use Supabase for backend services, including authentication and database interactions.
+- Follow Supabase guidelines for security and performance.
+- Use FluentValidation schemas to validate data exchanged with the backend.
+- Use supabase integration in asp.net by NuGet
+- Supabase PostgreSQL is the single source of truth for all application data.
+- Use EF Core code-first migrations.
+- Supabase Auth manage
+- The backend trusts Supabase JWT and does not implement local authentication.
+- Never store or process passwords on the backend.
