@@ -1,5 +1,4 @@
 using MemoWords.Api.Application.DTOs;
-using MemoWords.Api.Application.Mappers;
 using MemoWords.Api.Application.Requests;
 using MemoWords.Api.Application.Services;
 using MemoWords.Api.Infrastructure.Auth;
@@ -22,6 +21,24 @@ namespace MemoWords.Api.Controllers
 			_logger = logger;
 		}
 
+		[HttpGet("{id:guid}")]
+		public async Task<ActionResult<CardDto>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
+		{
+			var userId = _userContext.GetCurrentUserId();
+
+			var card = await _cardService.GetCardByIdAsync(userId, id, cancellationToken);
+			if (card is null)
+			{
+				_logger.LogWarning("Card {CardId} not found for user {UserId}", id, userId);
+				return NotFound();
+			}
+
+			var dto = card.CreateCardDto();
+			_logger.LogInformation("Fetched card {CardId} for user {UserId}", dto.Id, userId);
+
+			return Ok(dto);
+		}
+
 		[HttpGet]
 		public async Task<ActionResult<PagedResultDto<CardDto>>> List([FromQuery] GetCardsQuery query, CancellationToken cancellationToken)
 		{
@@ -40,7 +57,7 @@ namespace MemoWords.Api.Controllers
 			var userId = _userContext.GetCurrentUserId();
 
 			var card = await _cardService.CreateCardAsync(userId, request.SourceText, request.TargetText, cancellationToken);
-			var dto = CardMapper.ToDto(card);
+			var dto = card.CreateCardDto();
 
 			_logger.LogInformation("Created card {CardId} for user {UserId}", dto.Id, userId);
 

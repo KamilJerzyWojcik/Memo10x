@@ -5,54 +5,70 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MemoWords.Api.Application.Services
 {
-	public sealed class CardService : ICardService
-	{
-		private readonly ApplicationDbContext _dbContext;
-		private readonly ILogger<CardService> _logger;
+    public sealed class CardService : ICardService
+    {
+        private readonly ApplicationDbContext _dbContext;
+        private readonly ILogger<CardService> _logger;
 
-		public CardService(ApplicationDbContext dbContext, ILogger<CardService> logger)
-		{
-			_dbContext = dbContext;
-			_logger = logger;
-		}
+        public CardService(ApplicationDbContext dbContext, ILogger<CardService> logger)
+        {
+            _dbContext = dbContext;
+            _logger = logger;
+        }
 
-		public async Task<Card> CreateCardAsync(Guid userId, string sourceText, string targetText, CancellationToken cancellationToken)
-		{
-			var trimmedSource = (sourceText ?? string.Empty).Trim();
-			var trimmedTarget = (targetText ?? string.Empty).Trim();
+        public async Task<Card?> GetCardByIdAsync(Guid userId, Guid id, CancellationToken cancellationToken)
+        {
+            var card = await _dbContext.Cards
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId, cancellationToken);
 
-			var entity = Card.CreateEtity(userId, trimmedSource, trimmedTarget);
+            if (card is null)
+            {
+                _logger.LogWarning("Card {CardId} not found for user {UserId}", id, userId);
+                return null;
+            }
+
+            _logger.LogInformation("Fetched card {CardId} for user {UserId}", id, userId);
+            return card;
+        }
+
+        public async Task<Card> CreateCardAsync(Guid userId, string sourceText, string targetText, CancellationToken cancellationToken)
+        {
+            var trimmedSource = (sourceText ?? string.Empty).Trim();
+            var trimmedTarget = (targetText ?? string.Empty).Trim();
+
+            var entity = Card.CreateEtity(userId, trimmedSource, trimmedTarget);
 
             await _dbContext.Cards.AddAsync(entity, cancellationToken);
-			await _dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
-			_logger.LogInformation("Card {CardId} created for user {UserId}", entity.Id, userId);
+            _logger.LogInformation("Card {CardId} created for user {UserId}", entity.Id, userId);
 
-			return entity;
-		}
+            return entity;
+        }
 
-		public async Task<PagedResultDto<CardDto>> GetCardsAsync(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
-		{
-			var query = _dbContext.Cards
-				.AsNoTracking()
-				.Where(c => c.UserId == userId);
+        public async Task<PagedResultDto<CardDto>> GetCardsAsync(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+        {
+            var query = _dbContext.Cards
+                .AsNoTracking()
+                .Where(c => c.UserId == userId);
 
-			var total = await query.CountAsync(cancellationToken);
+            var total = await query.CountAsync(cancellationToken);
 
-			var items = await query
-				.OrderByDescending(c => c.CreatedAt)
-				.ThenByDescending(c => c.Id)
-				.Skip((page - 1) * pageSize)
-				.Take(pageSize)
-				.Select(c => c.CreateCardDto())
-				.ToListAsync(cancellationToken);
+            var items = await query
+                .OrderByDescending(c => c.CreatedAt)
+                .ThenByDescending(c => c.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => c.CreateCardDto())
+                .ToListAsync(cancellationToken);
 
-			var hasNextPage = page * pageSize < total;
+            var hasNextPage = page * pageSize < total;
 
-			return PagedResultDto<CardDto>.Create(items, page, pageSize, total, hasNextPage);
+            return PagedResultDto<CardDto>.Create(items, page, pageSize, total, hasNextPage);
 
-		}
-	}
+        }
+    }
 }
 
 

@@ -82,9 +82,6 @@ Punkt końcowy zwraca pojedynczą kartę słownictwa, o ile należy do bieżące
 - Sprawdź: niepoprawny GUID → 400; nieistniejący `id` → 404.
 6) (Po wdrożeniu auth) – Włączyć `[Authorize]` na kontrolerze/akcji i skonfigurować JWT z walidacją JWK Supabase; zachować filtrację po `userId`.
 
-
-
-
 ### To-dos
 
 - [ ] Dodać GetCardByIdAsync do ICardService
