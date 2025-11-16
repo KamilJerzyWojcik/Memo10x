@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace MemoWords.Api.Domain.Entities
 {
 	public class Card
