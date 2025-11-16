@@ -97,7 +97,6 @@ Koperta listy:
   - Błędy:
     - 400 (walidacja)
     - 401 (brak autoryzacji)
-    - 409 (konflikt idempotencji)
 
 - PATCH /api/v1/cards/{id}
   - Opis: Częściowa aktualizacja pól karty użytkownika; loguje `edit_saved`.
