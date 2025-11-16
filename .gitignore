@@ -69,3 +69,4 @@ pnpm-debug.log*
 .parcel-cache/
 
 
+MemoWords/MemoWords.Api/appsettings.Development.json
