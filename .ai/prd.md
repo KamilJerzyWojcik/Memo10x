@@ -15,7 +15,7 @@ Zakres MVP w skrócie:
 - Dodawanie kart ze słowem/kolokacją i tłumaczeniem (AI lub ręczne).
 - Przeglądanie listy, edycja i twarde usuwanie z potwierdzeniem.
 - Uwierzytelnianie: e‑mail + hasło, długie sesje z auto‑odświeżaniem.
-- Deduplikacja wpisów 1:1, sortowanie listy malejąco po dacie dodania, paginacja 10/50/100.
+- sortowanie listy malejąco po dacie dodania, paginacja 10/50/100.
 - Telemetria w logach własnych na potrzeby metryki akceptacji tłumaczeń AI.
 
 
@@ -35,14 +35,13 @@ Manualne przygotowanie list słów do nauki jest czasochłonne i zniechęcające
 
 - Model danych karty:
   - Minimalne pola: słowo/kolokacja (oryginał), tłumaczenie, createdAt, updatedAt.
-  - Przechowywanie oryginalnej pisowni wejścia; operacje (np. duplikaty) oparte na wersji znormalizowanej.
+  - Przechowywanie oryginalnej pisowni wejścia.
 
 - Dodawanie karty:
   - Dialog dodawania zawiera pola: Angielskie słowo/kolokacja oraz Polskie tłumaczenie.
   - Tryb AI: przycisk Generuj tworzy propozycję tłumaczenia; użytkownik może edytować oba pola i dodać kartę.
   - Tryb ręczny: możliwe dodanie bez użycia AI (użytkownik sam wypełnia oba pola).
   - Regeneracja tłumaczenia dostępna bez limitów.
-  - Blokada duplikatów 1:1 (jedno słowo/kolokacja → jedno tłumaczenie) w oparciu o normalizację: trim, lowercase, pojedyncze spacje; brak oferty przejścia do edycji istniejącej karty, wyłącznie komunikat.
 
 - Edycja i usuwanie:
   - Edycja karty w dialogu; aktualizacja obu pól dozwolona; zapisywany updatedAt.
@@ -67,7 +66,7 @@ Manualne przygotowanie list słów do nauki jest czasochłonne i zniechęcające
   - Standardy dostępności nie są kryterium akceptacyjnym w MVP.
 
 - Błędy i komunikaty:
-  - Jasne komunikaty błędów dla: duplikatu, braku autoryzacji, błędów sieci/AI, nieprawidłowego hasła.
+  - Jasne komunikaty błędów dla: braku autoryzacji, błędów sieci/AI, nieprawidłowego hasła.
   - Zachowanie formularza przy błędach: wartości pól pozostają zachowane, możliwość ponowienia.
 
 
@@ -158,55 +157,47 @@ US-009
   - Po dodaniu karta pojawia się na górze listy.
 
 US-010
-- Tytuł: Blokada duplikatów 1:1
-- Opis: Jako użytkownik nie chcę dodawać duplikatów istniejących kart.
-- Kryteria akceptacji:
-  - Normalizacja porównania: trim, lowercase, pojedyncze spacje.
-  - Próba dodania duplikatu pokazuje komunikat i nie dodaje karty.
-  - Brak opcji przejścia do edycji istniejącej karty w tym miejscu.
-
-US-011
 - Tytuł: Edycja istniejącej karty
 - Opis: Jako użytkownik chcę edytować słowo/kolokację i tłumaczenie w dialogu, mam mozliwosc ponownego wygenerowania przez AI.
 - Kryteria akceptacji:
   - Mogę zmienić oba pola i zapisać zmiany.
   - Pole updatedAt jest aktualizowane.
 
-US-012
+US-011
 - Tytuł: Usuwanie karty z potwierdzeniem
 - Opis: Jako użytkownik chcę trwale usunąć kartę po potwierdzeniu, bez opcji cofnięcia.
 - Kryteria akceptacji:
   - Modal potwierdzenia z opcjami Tak/Nie.
   - Po potwierdzeniu karta znika z listy; zdarzenie delete_confirmed zapisane w logach.
 
-US-013
+US-012
 - Tytuł: Interfejs w języku polskim
 - Opis: Jako użytkownik chcę, aby cały interfejs był po polsku.
 - Kryteria akceptacji:
   - Wszystkie etykiety, komunikaty i stany są w języku polskim.
 
-US-014
+US-013
 - Tytuł: Telemetria zdarzeń kluczowych
 - Opis: Jako zespół produktu chcemy rejestrować zdarzenia do pomiaru metryki akceptacji.
 - Kryteria akceptacji:
   - Logowane są co najmniej: generate_clicked, translate_generated, card_added_after_generate, edit_saved, delete_confirmed, dialog_add_canceled.
   - Logi zawierają identyfikator użytkownika i znacznik czasu.
 
-US-015
+US-014
 - Tytuł: Obsługa błędów generowania AI
 - Opis: Jako użytkownik chcę otrzymać jasny komunikat, gdy generowanie zawiedzie, i móc ponowić.
 - Kryteria akceptacji:
   - W przypadku błędu AI/timeout pojawia się komunikat i opcja ponów.
   - Wartości pól są zachowane.
 
-US-016
+US-015
 - Tytuł: Obsługa błędów zapisu i autoryzacji
 - Opis: Jako użytkownik chcę zrozumiałe komunikaty, gdy zapis/operacja nie powiedzie się.
 - Kryteria akceptacji:
   - Brak autoryzacji zwraca 401 i komunikat; po odświeżeniu sesji operacja może zostać ponowiona.
   - Błąd sieci nie usuwa danych z formularza.
 
-US-017
+US-016
 - Tytuł: Bezpieczny dostęp do API
 - Opis: Jako system chcę, aby dostęp do danych był możliwy tylko z ważnym JWT.
 - Kryteria akceptacji:
@@ -214,26 +205,19 @@ US-017
   - Tokeny są walidowane względem Supabase JWK.
   - Backend nie przyjmuje ani nie przechowuje haseł.
 
-US-018
+US-017
 - Tytuł: Anulowanie dodawania karty
 - Opis: Jako użytkownik chcę móc zamknąć dialog bez dodania karty.
 - Kryteria akceptacji:
   - Zamknięcie dialogu przed zapisem rejestruje dialog_add_canceled.
   - Taka sesja wchodzi do mianownika metryki akceptacji.
 
-US-019
+US-018
 - Tytuł: Mobile‑first ergonomia
 - Opis: Jako użytkownik chcę wygodnie korzystać z aplikacji na małym ekranie.
 - Kryteria akceptacji:
   - Elementy interaktywne mają odpowiednie rozmiary dotykowe.
   - Kluczowe przepływy (dodanie, edycja, usunięcie) są w pełni wykonalne na telefonie.
-
-US-020
-- Tytuł: Normalizacja i przechowywanie oryginału
-- Opis: Jako użytkownik chcę zachować oryginalną pisownię, przy jednoczesnym wykrywaniu duplikatów po wersji znormalizowanej.
-- Kryteria akceptacji:
-  - System przechowuje oryginalny tekst.
-  - Do porównań używa normalizacji: trim, lowercase, pojedyncze spacje.
 
 
 ## 6. Metryki sukcesu
@@ -247,7 +231,6 @@ US-020
 
 - Dodatkowe wskaźniki zdrowia produktu (MVP):
   - Odsetek błędów generowania AI i średnia liczba regeneracji na kartę.
-  - Odsetek odrzuceń dodania z powodu duplikatu.
   - Skuteczność logowania i odświeżania sesji (odsetek odpowiedzi 2xx dla auth).
 
 
