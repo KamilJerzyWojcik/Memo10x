@@ -61,7 +61,7 @@ Koperta listy:
 }
 ```
 
-- GET /api/v1/cards
+<!-- - GET /api/v1/cards
   - Opis: Lista kart bieżącego użytkownika posortowana po `createdAt DESC`.
   - Uwierzytelnianie: Wymagane.
   - Parametry zapytania:
@@ -71,7 +71,7 @@ Koperta listy:
     - Treść: Koperta listy (powyżej)
   - Błędy:
     - 400 (nieprawidłowe `page`/`pageSize`)
-    - 401 (brak/nieważny JWT)
+    - 401 (brak/nieważny JWT) -->
 
 - GET /api/v1/cards/{id}
   - Opis: Pobierz pojedynczą kartę należącą do bieżącego użytkownika.
@@ -81,7 +81,7 @@ Koperta listy:
   - Sukces 200: JSON karty
   - Błędy:
     - 401, 404 (brak uprawnień lub nie znaleziono)
-
+<!-- 
 - POST /api/v1/cards
   - Opis: Utwórz kartę dla bieżącego użytkownika.
   - Uwierzytelnianie: Wymagane.
@@ -96,7 +96,7 @@ Koperta listy:
     - Treść: JSON karty
   - Błędy:
     - 400 (walidacja)
-    - 401 (brak autoryzacji)
+    - 401 (brak autoryzacji) -->
 
 - PATCH /api/v1/cards/{id}
   - Opis: Częściowa aktualizacja pól karty użytkownika; loguje `edit_saved`.
