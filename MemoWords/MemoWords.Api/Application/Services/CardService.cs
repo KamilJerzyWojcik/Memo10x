@@ -68,6 +68,52 @@ namespace MemoWords.Api.Application.Services
             return PagedResultDto<CardDto>.Create(items, page, pageSize, total, hasNextPage);
 
         }
+
+			public async Task<Card?> UpdateCardAsync(Guid userId, Guid id, string? sourceText, string? targetText, CancellationToken cancellationToken)
+			{
+				var card = await _dbContext.Cards
+					.FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId, cancellationToken);
+
+				if (card is null)
+				{
+					_logger.LogWarning("Card {CardId} not found for user {UserId} when updating", id, userId);
+					return null;
+				}
+
+				var anyChanged = false;
+
+				if (sourceText is not null)
+				{
+					var trimmedSource = sourceText.Trim();
+					if (!string.Equals(card.SourceText, trimmedSource, StringComparison.Ordinal))
+					{
+						card.SourceText = trimmedSource;
+						anyChanged = true;
+					}
+				}
+
+				if (targetText is not null)
+				{
+					var trimmedTarget = targetText.Trim();
+					if (!string.Equals(card.TargetText, trimmedTarget, StringComparison.Ordinal))
+					{
+						card.TargetText = trimmedTarget;
+						anyChanged = true;
+					}
+				}
+
+				if (anyChanged)
+				{
+					await _dbContext.SaveChangesAsync(cancellationToken);
+					_logger.LogInformation("Card {CardId} updated for user {UserId}", id, userId);
+				}
+				else
+				{
+					_logger.LogInformation("Card {CardId} for user {UserId} received PATCH with no effective changes", id, userId);
+				}
+
+				return card;
+			}
     }
 }
 

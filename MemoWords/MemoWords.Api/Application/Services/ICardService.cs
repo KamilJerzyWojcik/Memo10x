@@ -10,6 +10,8 @@ namespace MemoWords.Api.Application.Services
         Task<Card?> GetCardByIdAsync(Guid userId, Guid id, CancellationToken cancellationToken);
 
         Task<PagedResultDto<CardDto>> GetCardsAsync(Guid userId, int page, int pageSize, CancellationToken cancellationToken);
+
+			Task<Card?> UpdateCardAsync(Guid userId, Guid id, string? sourceText, string? targetText, CancellationToken cancellationToken);
     }
 }
 
