@@ -1,0 +1,6 @@
+
+# Supabase
+
+- npx supabase init
+- npx supabase start
+- npx supabase status -o env
