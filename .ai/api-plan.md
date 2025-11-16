@@ -98,7 +98,7 @@ Koperta listy:
     - 400 (walidacja)
     - 401 (brak autoryzacji) -->
 
-- PATCH /api/v1/cards/{id}
+<!-- - PATCH /api/v1/cards/{id}
   - Opis: Częściowa aktualizacja pól karty użytkownika; loguje `edit_saved`.
   - Uwierzytelnianie: Wymagane.
   - Ścieżka: `id` (uuid)
@@ -113,10 +113,10 @@ Koperta listy:
     - Treść: JSON karty (z odświeżonym `updatedAt`)
   - Błędy:
     - 400 (nieprawidłowe dane; brak pól lub naruszenie ograniczeń)
-    - 401, 404 (brak uprawnień lub nie znaleziono)
+    - 401, 404 (brak uprawnień lub nie znaleziono) -->
 
 - DELETE /api/v1/cards/{id}
-  - Opis: Trwałe usunięcie karty użytkownika; loguje `delete_confirmed`.
+  - Opis: Trwałe usunięcie karty użytkownika.
   - Uwierzytelnianie: Wymagane.
   - Ścieżka: `id` (uuid)
   - Sukces 204 (bez treści)
@@ -158,7 +158,7 @@ JSON encji (odpowiedź):
 ### 2.3 AI Translate
 
 - POST /api/v1/ai/translate
-  - Opis: Wygeneruj polskie tłumaczenie dla wejścia EN z użyciem mocka; loguje `translate_generated` przy sukcesie lub `translate_failed` przy błędzie.
+  - Opis: Wygeneruj polskie tłumaczenie dla wejścia EN z użyciem mocka;
   - Uwierzytelnianie: Wymagane.
   - Żądanie:
     ```json
@@ -171,14 +171,13 @@ JSON encji (odpowiedź):
     ```json
     {
       "translation": "string",
-      "durationMs": 1234
     }
     ```
   - Błędy:
     - 400 (walidacja)
     - 401 (brak autoryzacji)
     - 429 (rate limit)
-    - 502/504 (błąd/timeout usługi AI; zdarzenie `translate_failed` z `errorCode`)
+    - 502/504 (błąd/timeout usługi AI)
 
 ### 2.4 Auth (pomocnicze)
 

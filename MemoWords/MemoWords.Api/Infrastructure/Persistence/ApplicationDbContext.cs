@@ -46,11 +46,7 @@ namespace MemoWords.Api.Infrastructure.Persistence
 
 			foreach (var entry in ChangeTracker.Entries<Card>())
 			{
-				if (entry.State == EntityState.Added)
-				{
-					entry.Entity.UpdatedAt = utcNow;
-				}
-				else if (entry.State == EntityState.Modified)
+				if (entry.State == EntityState.Modified)
 				{
 					entry.Entity.UpdatedAt = utcNow;
 				}

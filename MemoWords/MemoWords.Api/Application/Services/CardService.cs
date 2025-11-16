@@ -34,10 +34,7 @@ namespace MemoWords.Api.Application.Services
 
         public async Task<Card> CreateCardAsync(Guid userId, string sourceText, string targetText, CancellationToken cancellationToken)
         {
-            var trimmedSource = (sourceText ?? string.Empty).Trim();
-            var trimmedTarget = (targetText ?? string.Empty).Trim();
-
-            var entity = Card.CreateEtity(userId, trimmedSource, trimmedTarget);
+			var entity = Card.CreateEntity(userId, sourceText, targetText);
 
             await _dbContext.Cards.AddAsync(entity, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -80,27 +77,7 @@ namespace MemoWords.Api.Application.Services
 					return null;
 				}
 
-				var anyChanged = false;
-
-				if (sourceText is not null)
-				{
-					var trimmedSource = sourceText.Trim();
-					if (!string.Equals(card.SourceText, trimmedSource, StringComparison.Ordinal))
-					{
-						card.SourceText = trimmedSource;
-						anyChanged = true;
-					}
-				}
-
-				if (targetText is not null)
-				{
-					var trimmedTarget = targetText.Trim();
-					if (!string.Equals(card.TargetText, trimmedTarget, StringComparison.Ordinal))
-					{
-						card.TargetText = trimmedTarget;
-						anyChanged = true;
-					}
-				}
+				var anyChanged = card.UpdateTexts(sourceText, targetText);
 
 				if (anyChanged)
 				{

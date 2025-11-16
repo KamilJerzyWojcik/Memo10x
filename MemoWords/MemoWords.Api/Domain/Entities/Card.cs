@@ -28,15 +28,44 @@ namespace MemoWords.Api.Domain.Entities
 
         }
 
-		public static Card CreateEtity(Guid userId, string trimmedSource, string trimmedTarget)
+		public static Card CreateEntity(Guid userId, string sourceText, string targetText)
 		{
-            return new Card
-            {
-                UserId = userId,
-                SourceText = trimmedSource,
-                TargetText = trimmedTarget
-            };
-        }
+			var trimmedSource = (sourceText ?? string.Empty).Trim();
+			var trimmedTarget = (targetText ?? string.Empty).Trim();
+			return new Card
+			{
+				UserId = userId,
+				SourceText = trimmedSource,
+				TargetText = trimmedTarget
+			};
+		}
+
+		public bool UpdateTexts(string? sourceText, string? targetText)
+		{
+			var anyChanged = false;
+
+			if (sourceText is not null)
+			{
+				var trimmedSource = sourceText.Trim();
+				if (!string.Equals(SourceText, trimmedSource, StringComparison.Ordinal))
+				{
+					SourceText = trimmedSource;
+					anyChanged = true;
+				}
+			}
+
+			if (targetText is not null)
+			{
+				var trimmedTarget = targetText.Trim();
+				if (!string.Equals(TargetText, trimmedTarget, StringComparison.Ordinal))
+				{
+					TargetText = trimmedTarget;
+					anyChanged = true;
+				}
+			}
+
+			return anyChanged;
+		}
 	}
 }
 
