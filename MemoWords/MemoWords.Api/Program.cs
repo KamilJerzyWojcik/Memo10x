@@ -32,8 +32,21 @@ namespace MemoWords.Api
 			builder.Services.AddScoped<ICardService, CardService>();
 			builder.Services.AddSingleton<IUserContext, MockUserContext>();
 
+			builder.Services.AddSwaggerGen();
+
 			builder.Services.AddControllers();
 			var app = builder.Build();
+
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseSwagger();
+				app.UseSwaggerUI(c =>
+				{
+					c.SwaggerEndpoint("/swagger/v1/swagger.json", "MemoWords API v1");
+					c.RoutePrefix = "swagger";
+				});
+			}
+
 			app.MapControllers();
 			app.Run();
         }
