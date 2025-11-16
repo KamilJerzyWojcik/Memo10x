@@ -73,14 +73,14 @@ Koperta listy:
     - 400 (nieprawidłowe `page`/`pageSize`)
     - 401 (brak/nieważny JWT) -->
 
-- GET /api/v1/cards/{id}
+<!-- - GET /api/v1/cards/{id}
   - Opis: Pobierz pojedynczą kartę należącą do bieżącego użytkownika.
   - Uwierzytelnianie: Wymagane.
   - Ścieżka:
     - `id` (uuid)
   - Sukces 200: JSON karty
   - Błędy:
-    - 401, 404 (brak uprawnień lub nie znaleziono)
+    - 401, 404 (brak uprawnień lub nie znaleziono) -->
 <!-- 
 - POST /api/v1/cards
   - Opis: Utwórz kartę dla bieżącego użytkownika.
@@ -114,7 +114,6 @@ Koperta listy:
   - Błędy:
     - 400 (nieprawidłowe dane; brak pól lub naruszenie ograniczeń)
     - 401, 404 (brak uprawnień lub nie znaleziono)
-    - 412 (niespełniony warunek wstępny przy niezgodnym ETag)
 
 - DELETE /api/v1/cards/{id}
   - Opis: Trwałe usunięcie karty użytkownika; loguje `delete_confirmed`.
