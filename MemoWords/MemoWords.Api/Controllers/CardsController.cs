@@ -22,6 +22,18 @@ namespace MemoWords.Api.Controllers
 			_logger = logger;
 		}
 
+		[HttpGet]
+		public async Task<ActionResult<PagedResultDto<CardDto>>> List([FromQuery] GetCardsQuery query, CancellationToken cancellationToken)
+		{
+			var userId = _userContext.GetCurrentUserId();
+
+			var result = await _cardService.GetCardsAsync(userId, query.Page, query.PageSize, cancellationToken);
+
+			_logger.LogInformation("Listed cards for user {UserId}: page {Page}, size {PageSize}, total {Total}", userId, result.Page, result.PageSize, result.Total);
+
+			return Ok(result);
+		}
+
 		[HttpPost]
 		public async Task<ActionResult<CardDto>> Create([FromBody] CreateCardRequest request, CancellationToken cancellationToken)
 		{

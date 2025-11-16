@@ -1,3 +1,5 @@
+using MemoWords.Api.Application.DTOs;
+
 namespace MemoWords.Api.Domain.Entities
 {
 	public class Card
@@ -12,6 +14,29 @@ namespace MemoWords.Api.Domain.Entities
 		public DateTimeOffset UpdatedAt { get; set; }
 
 		public ICollection<Event> Events { get; set; } = new List<Event>();
+
+		public CardDto CreateCardDto()
+		{
+			return new CardDto
+			{
+				Id = Id,
+				SourceText = SourceText,
+				TargetText = TargetText,
+				CreatedAt = CreatedAt,
+				UpdatedAt = UpdatedAt
+			};
+
+        }
+
+		public static Card CreateEtity(Guid userId, string trimmedSource, string trimmedTarget)
+		{
+            return new Card
+            {
+                UserId = userId,
+                SourceText = trimmedSource,
+                TargetText = trimmedTarget
+            };
+        }
 	}
 }
 
