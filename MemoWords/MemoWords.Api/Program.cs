@@ -4,10 +4,10 @@ using MemoWords.Api.Application.Services;
 using MemoWords.Api.Application.Validation;
 using MemoWords.Api.Infrastructure.Auth;
 using MemoWords.Api.Infrastructure.Persistence;
+using MemoWords.Api.Application.DTOs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
-using Microsoft.AspNetCore.Http;
+using System.Reflection;
 
 namespace MemoWords.Api
 {
@@ -71,6 +71,7 @@ namespace MemoWords.Api
 			}
 
 			app.UseRateLimiter();
+
 			app.MapControllers();
 			app.Run();
         }
