@@ -115,13 +115,13 @@ Koperta listy:
     - 400 (nieprawidłowe dane; brak pól lub naruszenie ograniczeń)
     - 401, 404 (brak uprawnień lub nie znaleziono) -->
 
-- DELETE /api/v1/cards/{id}
+<!-- - DELETE /api/v1/cards/{id}
   - Opis: Trwałe usunięcie karty użytkownika.
   - Uwierzytelnianie: Wymagane.
   - Ścieżka: `id` (uuid)
   - Sukces 204 (bez treści)
   - Błędy:
-    - 401, 404
+    - 401, 404 -->
 
 ### 2.2 Zdarzenia (Telemetria)
 
