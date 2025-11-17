@@ -2,6 +2,7 @@ using MemoWords.Api.Application.DTOs;
 using MemoWords.Api.Application.Requests;
 using MemoWords.Api.Application.Services;
 using MemoWords.Api.Infrastructure.Auth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MemoWords.Api.Controllers
@@ -81,6 +82,22 @@ namespace MemoWords.Api.Controllers
 
             return Ok(dto);
         }
+
+		[HttpDelete("{id:guid}")]
+		public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
+		{
+			var userId = _userContext.GetCurrentUserId();
+
+			var deleted = await _cardService.DeleteCardAsync(userId, id, cancellationToken);
+			if (!deleted)
+			{
+				_logger.LogWarning("Card {CardId} not found for user {UserId} during delete", id, userId);
+				return NotFound();
+			}
+
+			_logger.LogInformation("Deleted card {CardId} for user {UserId}", id, userId);
+			return NoContent();
+		}
     }
 }
 

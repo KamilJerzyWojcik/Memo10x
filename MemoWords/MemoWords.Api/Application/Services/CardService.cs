@@ -2,6 +2,7 @@ using MemoWords.Api.Application.DTOs;
 using MemoWords.Api.Domain.Entities;
 using MemoWords.Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace MemoWords.Api.Application.Services
 {
@@ -90,6 +91,24 @@ namespace MemoWords.Api.Application.Services
 				}
 
 				return card;
+			}
+
+			public async Task<bool> DeleteCardAsync(Guid userId, Guid id, CancellationToken cancellationToken)
+			{
+				var deleted = await _dbContext.Cards
+					.Where(c => c.Id == id && c.UserId == userId)
+					.ExecuteDeleteAsync(cancellationToken);
+
+				if (deleted == 0)
+				{
+					_logger.LogWarning("Card {CardId} not found for user {UserId} when deleting", id, userId);
+					return false;
+				}
+
+				await _dbContext.SaveChangesAsync(cancellationToken);
+
+				_logger.LogInformation("Card {CardId} deleted for user {UserId}", id, userId);
+				return true;
 			}
     }
 }
