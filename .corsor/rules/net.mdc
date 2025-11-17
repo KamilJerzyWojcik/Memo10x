@@ -28,3 +28,6 @@ Communication:
 - ASP.NET must validate all incoming JWT tokens using JWT Bearer Authentication configured with Supabase JWK (JSON Web Key Set) endpoint.
 - All protected endpoints in ASP.NET require authorization via RequireAuthorization().
 - The backend can read User.Claims from the JWT from supabase
+
+FluentValidation:
+- Transform nie jest dostępny zastąp Transform dwoma warunkami Must.

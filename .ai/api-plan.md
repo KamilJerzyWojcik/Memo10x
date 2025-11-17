@@ -157,7 +157,7 @@ JSON encji (odpowiedź):
 
 ### 2.3 AI Translate
 
-- POST /api/v1/ai/translate
+<!-- - POST /api/v1/ai/translate
   - Opis: Wygeneruj polskie tłumaczenie dla wejścia EN z użyciem mocka;
   - Uwierzytelnianie: Wymagane.
   - Żądanie:
@@ -177,7 +177,7 @@ JSON encji (odpowiedź):
     - 400 (walidacja)
     - 401 (brak autoryzacji)
     - 429 (rate limit)
-    - 502/504 (błąd/timeout usługi AI)
+    - 502/504 (błąd/timeout usługi AI) -->
 
 ### 2.4 Auth (pomocnicze)
 

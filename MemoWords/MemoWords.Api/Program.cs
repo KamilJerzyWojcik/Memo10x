@@ -5,6 +5,9 @@ using MemoWords.Api.Application.Validation;
 using MemoWords.Api.Infrastructure.Auth;
 using MemoWords.Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Http;
 
 namespace MemoWords.Api
 {
@@ -27,10 +30,30 @@ namespace MemoWords.Api
 			// FluentValidation
 			builder.Services.AddFluentValidationAutoValidation();
 			builder.Services.AddValidatorsFromAssemblyContaining<CreateCardRequestValidator>();
+			builder.Services.AddValidatorsFromAssemblyContaining<TranslateRequestValidator>();
 
 			// DI
 			builder.Services.AddScoped<ICardService, CardService>();
+			builder.Services.AddScoped<IAiTranslationService, MockAiTranslationService>();
 			builder.Services.AddSingleton<IUserContext, MockUserContext>();
+
+			// Rate Limiting (polityka 'translate')
+			builder.Services.AddRateLimiter(options =>
+			{
+				options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+				options.AddPolicy("translate", httpContext =>
+				{
+					var userContext = httpContext.RequestServices.GetRequiredService<IUserContext>();
+					var key = userContext.GetCurrentUserId().ToString();
+					return RateLimitPartition.GetFixedWindowLimiter(key, _ => new FixedWindowRateLimiterOptions
+					{
+						AutoReplenishment = true,
+						PermitLimit = 30,
+						QueueLimit = 0,
+						Window = TimeSpan.FromMinutes(1)
+					});
+				});
+			});
 
 			builder.Services.AddSwaggerGen();
 
@@ -47,6 +70,7 @@ namespace MemoWords.Api
 				});
 			}
 
+			app.UseRateLimiter();
 			app.MapControllers();
 			app.Run();
         }
