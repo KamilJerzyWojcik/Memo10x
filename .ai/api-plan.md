@@ -61,7 +61,7 @@ Koperta listy:
 }
 ```
 
-<!-- - GET /api/v1/cards
+- GET /api/v1/cards
   - Opis: Lista kart bieżącego użytkownika posortowana po `createdAt DESC`.
   - Uwierzytelnianie: Wymagane.
   - Parametry zapytania:
@@ -71,17 +71,17 @@ Koperta listy:
     - Treść: Koperta listy (powyżej)
   - Błędy:
     - 400 (nieprawidłowe `page`/`pageSize`)
-    - 401 (brak/nieważny JWT) -->
+    - 401 (brak/nieważny JWT)
 
-<!-- - GET /api/v1/cards/{id}
+- GET /api/v1/cards/{id}
   - Opis: Pobierz pojedynczą kartę należącą do bieżącego użytkownika.
   - Uwierzytelnianie: Wymagane.
   - Ścieżka:
     - `id` (uuid)
   - Sukces 200: JSON karty
   - Błędy:
-    - 401, 404 (brak uprawnień lub nie znaleziono) -->
-<!-- 
+    - 401, 404 (brak uprawnień lub nie znaleziono)
+
 - POST /api/v1/cards
   - Opis: Utwórz kartę dla bieżącego użytkownika.
   - Uwierzytelnianie: Wymagane.
@@ -96,9 +96,9 @@ Koperta listy:
     - Treść: JSON karty
   - Błędy:
     - 400 (walidacja)
-    - 401 (brak autoryzacji) -->
+    - 401 (brak autoryzacji)
 
-<!-- - PATCH /api/v1/cards/{id}
+- PATCH /api/v1/cards/{id}
   - Opis: Częściowa aktualizacja pól karty użytkownika; loguje `edit_saved`.
   - Uwierzytelnianie: Wymagane.
   - Ścieżka: `id` (uuid)
@@ -113,51 +113,19 @@ Koperta listy:
     - Treść: JSON karty (z odświeżonym `updatedAt`)
   - Błędy:
     - 400 (nieprawidłowe dane; brak pól lub naruszenie ograniczeń)
-    - 401, 404 (brak uprawnień lub nie znaleziono) -->
+    - 401, 404 (brak uprawnień lub nie znaleziono)
 
-<!-- - DELETE /api/v1/cards/{id}
+ - DELETE /api/v1/cards/{id}
   - Opis: Trwałe usunięcie karty użytkownika.
   - Uwierzytelnianie: Wymagane.
   - Ścieżka: `id` (uuid)
   - Sukces 204 (bez treści)
   - Błędy:
-    - 401, 404 -->
-
-### 2.2 Zdarzenia (Telemetria)
-
-JSON encji (odpowiedź):
-```json
-{
-  "id": "uuid",
-  "userId": "uuid|null",
-  "type": "generate_clicked",
-  "createdAt": "2025-11-16T14:52:00Z",
-  "cardId": "uuid|null",
-  "errorCode": "string|null",
-}
-```
-
-- POST /api/v1/events
-  - Opis: Zarejestruj zdarzenie telemetryczne produktu. Zdarzenia użytkownika wymagają JWT; backend ustawia `userId` na podstawie tokena.
-  - Uwierzytelnianie: Wymagane dla zdarzeń użytkownika.
-  - Żądanie:
-    ```json
-    {
-      "type": "generate_clicked | translate_generated | translate_failed | card_added_after_generate | edit_saved | delete_confirmed | dialog_add_canceled",
-      "cardId": "uuid (opcjonalnie)",
-      "errorCode": "string (opcjonalnie, <=100 znaków)",
-    }
-    ```
-  - Sukces 202 (accepted; semantyka fire-and-forget)
-  - Błędy:
-    - 400 (nieprawidłowy typ/kształt danych)
-    - 401 (brak/nieważny JWT dla zdarzeń od użytkownika)
-    - 429 (ograniczenie szybkości)
-
+    - 401, 404
 
 ### 2.3 AI Translate
 
-<!-- - POST /api/v1/ai/translate
+- POST /api/v1/ai/translate
   - Opis: Wygeneruj polskie tłumaczenie dla wejścia EN z użyciem mocka;
   - Uwierzytelnianie: Wymagane.
   - Żądanie:
@@ -177,7 +145,7 @@ JSON encji (odpowiedź):
     - 400 (walidacja)
     - 401 (brak autoryzacji)
     - 429 (rate limit)
-    - 502/504 (błąd/timeout usługi AI) -->
+    - 502/504 (błąd/timeout usługi AI)
 
 ### 2.4 Auth (pomocnicze)
 
@@ -243,11 +211,6 @@ Karty:
 - Własność: wszystkie operacje zawężone do `jwt.userId`.
 - `updatedAt`: ustawiane po stronie serwera przy tworzeniu/aktualizacji na `UtcNow`.
 
-Zdarzenia:
-- `type`: jedna z dozwolonych wartości enum:
-  - `generate_clicked`, `translate_generated`, `translate_failed`, `card_added_after_generate`, `edit_saved`, `delete_confirmed`, `dialog_add_canceled`.
-- `errorCode`: opcjonalny tekst (<=100 znaków).
-- Zdarzenia użytkownika: wymagają JWT; backend ustawia `userId` z tokena; nie przyjmować `userId` z klienta.
 
 AI Translate:
 - `sourceText`: wymagane; te same ograniczenia co pola karty (1..500 po przycięciu).
@@ -258,9 +221,6 @@ AI Translate:
   - Create: Insert z `user_id = jwt.userId`. Zwraca utworzoną kartę. Egzekwuje przycięcia i ograniczenia.
   - Update: Aktualizuje tylko przekazane pola. `updatedAt` ustawiane na czas serwera. 412 przy konflikcie.
   - Delete: Twarde usunięcie; zwraca 204.
-
-- Zdarzenia
-  - Przyjmuj, waliduj, zapisuj. 202 do odsprzęglenia latencji zapisu. `userId` wyłącznie pochodne z JWT.
 
 - AI Translate
   - Waliduj wejście; wywołuj mock. Przy sukcesie zwracaj tłumaczenie i emituj `translate_generated`; przy błędzie/timeout emituj `translate_failed` z `errorCode` i zwracaj adekwatny status (preferuj 504 dla timeout).
@@ -317,80 +277,3 @@ Standardowe statusy:
 - Stosuj strażników (guard clauses); szybkie zwroty dla stanów niepoprawnych.
 - MediatR do obsługi command/query; repozytoria do persystencji.
 - `updatedAt` ustawiane w kodzie (bez triggerów DB).
-
-## 5. Przykłady
-
-Przykład — Utworzenie karty (201):
-```json
-POST /api/v1/cards
-{
-  "sourceText": "take off",
-  "targetText": "zdejmować (ubranie)"
-}
-```
-```json
-201 Created
-{
-  "id": "b2a7b372-1b7d-4a33-9a7b-3ae2d9e64a1e",
-  "sourceText": "take off",
-  "targetText": "zdejmować (ubranie)",
-  "createdAt": "2025-11-16T14:52:00Z",
-  "updatedAt": "2025-11-16T14:52:00Z"
-}
-```
-
-Przykład — Lista kart (200):
-```json
-GET /api/v1/cards?page=1&pageSize=10
-```
-```json
-200 OK
-{
-  "items": [
-    {
-      "id": "b2a7b372-1b7d-4a33-9a7b-3ae2d9e64a1e",
-      "sourceText": "take off",
-      "targetText": "zdejmować (ubranie)",
-      "createdAt": "2025-11-16T14:52:00Z",
-      "updatedAt": "2025-11-16T14:52:00Z"
-    }
-  ],
-  "page": 1,
-  "pageSize": 10,
-  "total": 1,
-  "hasNextPage": false
-}
-```
-
-Przykład — AI Translate (200):
-```json
-POST /api/v1/ai/translate
-{
-  "sourceText": "break down",
-}
-```
-```json
-200 OK
-{
-  "translation": "zepsuć się; załamać się",
-}
-```
-
-Przykład — Zdarzenie (202):
-```json
-POST /api/v1/events
-{
-  "type": "generate_clicked",
-}
-```
-```json
-202 Accepted
-{}
-```
-
-## 6. Pytania otwarte / Założenia
-
-- Internacjonalizacja komunikatów błędów: API zwraca techniczne błędy po angielsku (ProblemDetails). Frontend mapuje na polskie komunikaty UI.
-- Użyto paginacji offsetowej z numerami stron.
-
-
