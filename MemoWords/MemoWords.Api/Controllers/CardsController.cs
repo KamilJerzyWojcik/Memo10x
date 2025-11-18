@@ -43,6 +43,7 @@ namespace MemoWords.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResultDto<CardDto>>> List([FromQuery] GetCardsQuery query, CancellationToken cancellationToken)
         {
+            
             var userId = _userContext.GetCurrentUserId();
 
             var result = await _cardService.GetCardsAsync(userId, query.Page, query.PageSize, cancellationToken);
