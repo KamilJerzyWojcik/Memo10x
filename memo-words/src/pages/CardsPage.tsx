@@ -40,6 +40,7 @@ export default function CardsPage() {
 
   const page = useMemo(() => parsePage(searchParams.get('page')), [searchParams]);
   const pageSize = useMemo(() => parsePageSize(searchParams.get('pageSize')), [searchParams]);
+  const highlightId = useMemo(() => searchParams.get('highlightId'), [searchParams]);
 
   const updateQuery = useCallback((next: { page?: number; pageSize?: PageSize }) => {
     const nextPageSize = next.pageSize ?? pageSize;
@@ -172,7 +173,7 @@ export default function CardsPage() {
           allowedPageSizes={ALLOWED_PAGE_SIZES}
           disabled={loading}
           onPageSizeChange={onPageSizeChange}
-          onAdd={() => navigate('/cards/new')}
+          onAdd={() => navigate('/cards/add')}
         />
       </header>
 
@@ -200,6 +201,7 @@ export default function CardsPage() {
               <CardListItem
                 key={card.id}
                 card={card}
+                highlight={highlightId === card.id}
                 confirming={confirmingId === card.id}
                 busy={deletingIds.has(card.id)}
                 autoFocusConfirm={confirmingId === card.id}

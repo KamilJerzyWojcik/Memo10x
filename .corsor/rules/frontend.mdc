@@ -4,6 +4,9 @@ alwaysApply: false
 ---
 ## FRONTEND
 
+!Important
+po każdej zmianie buduj rozwiązanie react  i sprawdzaj czy są błędy
+
 ### Guidelines for REACT
 
 #### REACT_CODING_STANDARDS

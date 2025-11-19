@@ -8,6 +8,11 @@ export interface CardDto {
   updatedAt: string;
 }
 
+export interface CreateCardRequest {
+  sourceText: string;
+  targetText: string;
+}
+
 export interface PagedResultDto<T> {
   items: T[];
   page: number;

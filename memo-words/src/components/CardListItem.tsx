@@ -4,6 +4,7 @@ import { formatDateTime } from '../utils/format';
 
 export interface CardListItemProps {
   card: CardDto;
+  highlight?: boolean;
   confirming: boolean;
   busy?: boolean;
   autoFocusConfirm?: boolean;
@@ -14,11 +15,20 @@ export interface CardListItemProps {
 }
 
 export default function CardListItem(props: CardListItemProps) {
-  const { card, confirming, busy, autoFocusConfirm, onEdit, onRequestDelete, onCancelDelete, onConfirmDelete } = props;
+  const { card, highlight, confirming, busy, autoFocusConfirm, onEdit, onRequestDelete, onCancelDelete, onConfirmDelete } = props;
   const dialogDescId = useId();
 
   return (
-    <li style={{ padding: 12, border: '1px solid #e2e8f0', borderRadius: 8 }} aria-busy={busy ? 'true' : undefined}>
+    <li
+      style={{
+        padding: 12,
+        border: '1px solid',
+        borderColor: highlight ? '#2563eb' : '#e2e8f0',
+        background: highlight ? '#dbeafe' : '#fff',
+        borderRadius: 8
+      }}
+      aria-busy={busy ? 'true' : undefined}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
         <div>
           <div style={{ fontWeight: 600 }}>{card.sourceText}</div>
