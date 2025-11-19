@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { PageShell } from './PageShell'
 import { PageHeader } from './PageHeader'
 import { Section } from './Section'
+import ScrollToTopButton from '@/components/ScrollToTopButton'
 
 interface ListPageLayoutProps {
   title: string
@@ -45,6 +46,7 @@ export function ListPageLayout({
       {footer ? (
         <Section className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">{footer}</Section>
       ) : null}
+      <ScrollToTopButton />
     </PageShell>
   )
 }

@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useRef, useLayoutEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import type { CardDto, PageSize, PagedResultDto } from '@/types/cards'
 import { getCards, deleteCard } from '@/services/cardsApi'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import Paginator from '@/components/Paginator'
 import EmptyState from '@/components/EmptyState'
 import { ApiError } from '@/services/apiClient'
 import CardListItem from '@/components/CardListItem'
-import CardsToolbar from '@/components/CardsToolbar'
+import CardsPaginationToolbar from '@/components/CardsPaginationToolbar'
 import { Button } from '@/components/ui/button'
 import { ListPageLayout } from '@/components/layout/ListPageLayout'
 import { useAppToast } from '@/hooks/useAppToast'
@@ -31,6 +30,7 @@ export default function CardsPage() {
   const [pageSize, setPageSize] = useState<PageSize>(DEFAULT_PAGE_SIZE)
   const [highlightId, setHighlightId] = useState<string | null>(null)
   const [reloadTick, setReloadTick] = useState(0)
+  const prevScrollY = useRef<number | null>(null)
 
   // Wyczyść query string z URL przy pierwszym wejściu (zachowując state)
   useEffect(() => {
@@ -106,13 +106,22 @@ export default function CardsPage() {
 
   const onPageChange = useCallback((nextPage: number) => {
     if (nextPage < 1) return;
+    prevScrollY.current = window.scrollY;
     setPage(nextPage);
   }, []);
 
   const onPageSizeChange = useCallback((next: PageSize) => {
+    prevScrollY.current = window.scrollY
     setPage(1);
     setPageSize(next);
   }, []);
+
+  useLayoutEffect(() => {
+    if (prevScrollY.current !== null && !loading) {
+      window.scrollTo({ top: prevScrollY.current, behavior: 'instant' })
+      prevScrollY.current = null
+    }
+  }, [loading, items])
 
   const onEdit = useCallback((id: string) => {
     navigate(`/cards/${encodeURIComponent(id)}/edit`);
@@ -202,9 +211,18 @@ export default function CardsPage() {
             Dodaj kartę
           </Button>
         }
+        toolbar={
+          <CardsPaginationToolbar
+            page={page}
+            pageSize={pageSize}
+            total={total}
+            allowedPageSizes={ALLOWED_PAGE_SIZES}
+            disabled={loading}
+            onPageChange={onPageChange}
+            onPageSizeChange={onPageSizeChange}
+          />
+        }
         heroAside={heroAside}
-        toolbar={<CardsToolbar pageSize={pageSize} allowedPageSizes={ALLOWED_PAGE_SIZES} disabled={loading} onPageSizeChange={onPageSizeChange} />}
-        footer={<Paginator page={page} pageSize={pageSize} total={total} disabled={loading} onPageChange={onPageChange} />}
       >
         {items.length === 0 ? (
           <div className="space-y-4">
