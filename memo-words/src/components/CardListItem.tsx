@@ -1,8 +1,9 @@
 import type { CardDto } from '@/types/cards'
-import { useId, useMemo } from 'react'
+import { useId } from 'react'
 import { formatDateTime } from '@/utils/format'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Sparkles } from 'lucide-react'
 
 export interface CardListItemProps {
   card: CardDto
@@ -28,54 +29,80 @@ export default function CardListItem({
   onConfirmDelete,
 }: CardListItemProps) {
   const dialogDescId = useId()
-  const initials = useMemo(() => card.sourceText.slice(0, 2).toUpperCase(), [card.sourceText])
 
   return (
     <li
       className={cn(
-        'group relative overflow-hidden rounded-[28px] border border-white/10 bg-[#161024]/85 p-6 shadow-[var(--shadow-md)] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:shadow-[var(--shadow-lg)]',
-        highlight ? 'border-primary/60 shadow-[0_0_0_1px_rgba(255,122,92,0.3)]' : '',
+        'group relative overflow-hidden rounded-3xl border border-border/40 bg-card/60 backdrop-blur-xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5',
+        highlight ? 'border-primary/60 ring-1 ring-primary/60 shadow-[0_0_30px_-10px_rgba(255,122,92,0.3)]' : '',
       )}
       aria-busy={busy ? 'true' : undefined}
     >
       <div
         className={cn(
-          'pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100',
+          'pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100',
           highlight ? 'opacity-100' : '',
         )}
         aria-hidden
         style={{
           background:
-            'radial-gradient(circle at 20% 20%, rgba(255, 122, 92, 0.2), transparent 45%), radial-gradient(circle at 80% 0%, rgba(255, 92, 69, 0.15), transparent 50%)',
+            'radial-gradient(circle at 0% 0%, rgba(255, 122, 92, 0.08), transparent 40%), radial-gradient(circle at 100% 100%, rgba(255, 92, 69, 0.05), transparent 40%)',
         }}
       />
-      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-1 items-start gap-4">
+      <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-1 items-center gap-5">
           <div
             className={cn(
-              'flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-strong text-lg font-semibold text-primary-foreground shadow-lg transition-all',
-              highlight ? 'ring-2 ring-primary/70' : '',
+              'flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-xl font-bold text-primary ring-1 ring-primary/20 transition-all group-hover:scale-105 group-hover:from-primary group-hover:to-primary-strong group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20 group-hover:ring-0',
+              highlight ? 'from-primary to-primary-strong text-primary-foreground shadow-lg shadow-primary/20 ring-0' : '',
             )}
             aria-hidden
           >
-            {initials}
+            <Sparkles className="h-8 w-8" />
           </div>
-          <div className="space-y-1">
-            <div className="text-lg font-semibold text-foreground">{card.sourceText}</div>
-            <div className="text-base text-muted-foreground">{card.targetText}</div>
+          <div className="space-y-1.5">
+            <div className="text-2xl font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
+              {card.sourceText}
+            </div>
+            <div className="flex items-center gap-2 text-lg font-medium text-primary/90">
+              <span className="text-muted-foreground/40">pl</span>
+              <span>{card.targetText}</span>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col gap-3 text-sm text-muted-foreground lg:items-end">
-          <div className="text-xs uppercase tracking-wider text-muted-foreground/80">
-            <div>Utw. {formatDateTime(card.createdAt)}</div>
-            <div>Akt. {formatDateTime(card.updatedAt)}</div>
+        
+        <div className="flex flex-col gap-4 md:items-end">
+          <div className="flex gap-3 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+            <span title={`Utworzono: ${formatDateTime(card.createdAt)}`}>
+              {new Date(card.createdAt).toLocaleDateString()}
+            </span>
+            {card.updatedAt !== card.createdAt && (
+              <span title={`Zaktualizowano: ${formatDateTime(card.updatedAt)}`} className="border-l border-white/10 pl-3">
+                Edytowano
+              </span>
+            )}
           </div>
+          
           {!confirming ? (
-            <div className="flex flex-wrap gap-2">
-              <Button variant="secondary" size="sm" onClick={() => onEdit(card.id)} disabled={busy} aria-label="Edytuj kartę">
+            <div className="flex items-center gap-2 opacity-80 transition-opacity group-hover:opacity-100">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => onEdit(card.id)} 
+                disabled={busy} 
+                aria-label="Edytuj kartę"
+                className="h-8 hover:bg-primary/10 hover:text-primary"
+              >
                 Edytuj
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => onRequestDelete(card.id)} disabled={busy} aria-label="Usuń kartę">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => onRequestDelete(card.id)} 
+                disabled={busy} 
+                aria-label="Usuń kartę"
+                className="h-8 hover:bg-destructive/10 hover:text-destructive"
+              >
                 Usuń
               </Button>
             </div>
@@ -84,28 +111,32 @@ export default function CardListItem({
               role="alertdialog"
               aria-label="Potwierdzenie usunięcia"
               aria-describedby={dialogDescId}
-              className="flex flex-wrap items-center gap-2 rounded-2xl border border-warning/40 bg-warning/15 px-3 py-2 text-xs text-warning-foreground"
+              className="flex flex-wrap items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs animate-in fade-in slide-in-from-right-2"
             >
-              <span id={dialogDescId}>Tej operacji nie można cofnąć.</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onCancelDelete(card.id)}
-                disabled={busy}
-                aria-label="Anuluj usunięcie"
-                autoFocus={autoFocusConfirm === true}
-              >
-                Anuluj
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => onConfirmDelete(card.id)}
-                disabled={busy}
-                aria-label="Potwierdź usunięcie"
-              >
-                Tak, usuń
-              </Button>
+              <span id={dialogDescId} className="font-medium text-destructive-foreground">Na pewno?</span>
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onCancelDelete(card.id)}
+                  disabled={busy}
+                  aria-label="Anuluj usunięcie"
+                  autoFocus={autoFocusConfirm === true}
+                  className="h-6 px-2 text-[10px] hover:bg-white/10"
+                >
+                  Nie
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onConfirmDelete(card.id)}
+                  disabled={busy}
+                  aria-label="Potwierdź usunięcie"
+                  className="h-6 px-2 text-[10px]"
+                >
+                  Tak
+                </Button>
+              </div>
             </div>
           )}
         </div>
