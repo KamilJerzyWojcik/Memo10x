@@ -1,116 +1,94 @@
-import type { CardDto } from '../types/cards';
-import { useId } from 'react';
-import { formatDateTime } from '../utils/format';
+import type { CardDto } from '@/types/cards'
+import { useId } from 'react'
+import { formatDateTime } from '@/utils/format'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export interface CardListItemProps {
-  card: CardDto;
-  highlight?: boolean;
-  confirming: boolean;
-  busy?: boolean;
-  autoFocusConfirm?: boolean;
-  onEdit: (id: string) => void;
-  onRequestDelete: (id: string) => void;
-  onCancelDelete: (id: string) => void;
-  onConfirmDelete: (id: string) => void;
+  card: CardDto
+  highlight?: boolean
+  confirming: boolean
+  busy?: boolean
+  autoFocusConfirm?: boolean
+  onEdit: (id: string) => void
+  onRequestDelete: (id: string) => void
+  onCancelDelete: (id: string) => void
+  onConfirmDelete: (id: string) => void
 }
 
-export default function CardListItem(props: CardListItemProps) {
-  const { card, highlight, confirming, busy, autoFocusConfirm, onEdit, onRequestDelete, onCancelDelete, onConfirmDelete } = props;
-  const dialogDescId = useId();
+export default function CardListItem({
+  card,
+  highlight,
+  confirming,
+  busy,
+  autoFocusConfirm,
+  onEdit,
+  onRequestDelete,
+  onCancelDelete,
+  onConfirmDelete,
+}: CardListItemProps) {
+  const dialogDescId = useId()
 
   return (
     <li
-      style={{
-        padding: 12,
-        border: '1px solid',
-        borderColor: highlight ? '#2563eb' : '#e2e8f0',
-        background: highlight ? '#dbeafe' : '#fff',
-        borderRadius: 8
-      }}
+      className={cn(
+        'rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-sm)] transition',
+        highlight ? 'border-primary/60 bg-primary/5 ring-1 ring-primary/30' : '',
+      )}
       aria-busy={busy ? 'true' : undefined}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center' }}>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div style={{ fontWeight: 600 }}>{card.sourceText}</div>
-          <div style={{ color: '#475569' }}>{card.targetText}</div>
+          <div className="text-lg font-semibold text-foreground">{card.sourceText}</div>
+          <div className="text-base text-muted-foreground">{card.targetText}</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ fontSize: 12, color: '#64748b', textAlign: 'right', whiteSpace: 'nowrap' }}>
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+          <div className="text-xs text-muted-foreground sm:text-right">
             <div>Utw: {formatDateTime(card.createdAt)}</div>
             <div>Akt: {formatDateTime(card.updatedAt)}</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {!confirming ? (
-              <>
-                <button
-                  onClick={() => onEdit(card.id)}
-                  disabled={busy}
-                  style={btnStyle(busy)}
-                  aria-label="Edytuj kartę"
-                >
-                  Edytuj
-                </button>
-                <button
-                  onClick={() => onRequestDelete(card.id)}
-                  disabled={busy}
-                  style={btnStyle(busy)}
-                  aria-label="Usuń kartę"
-                >
-                  Usuń
-                </button>
-              </>
-            ) : (
-              <div
-                role="alertdialog"
-                aria-label="Potwierdzenie usunięcia"
-                aria-describedby={dialogDescId}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  background: '#fff7ed',
-                  border: '1px solid #fdba74',
-                  borderRadius: 8,
-                  padding: '6px 8px',
-                }}
+          {!confirming ? (
+            <div className="flex gap-2">
+              <Button variant="secondary" size="sm" onClick={() => onEdit(card.id)} disabled={busy} aria-label="Edytuj kartę">
+                Edytuj
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => onRequestDelete(card.id)} disabled={busy} aria-label="Usuń kartę">
+                Usuń
+              </Button>
+            </div>
+          ) : (
+            <div
+              role="alertdialog"
+              aria-label="Potwierdzenie usunięcia"
+              aria-describedby={dialogDescId}
+              className="flex items-center gap-2 rounded-xl border border-warning/50 bg-warning/20 px-3 py-2 text-xs text-warning-foreground"
+            >
+              <span id={dialogDescId}>Tej operacji nie można cofnąć.</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onCancelDelete(card.id)}
+                disabled={busy}
+                aria-label="Anuluj usunięcie"
+                autoFocus={autoFocusConfirm === true}
               >
-                <span id={dialogDescId} style={{ fontSize: 12, color: '#9a3412' }}>
-                  Tej operacji nie można cofnąć.
-                </span>
-                <button
-                  onClick={() => onCancelDelete(card.id)}
-                  disabled={busy}
-                  style={btnStyle(busy)}
-                  aria-label="Anuluj usunięcie"
-                  autoFocus={autoFocusConfirm === true}
-                >
-                  Anuluj
-                </button>
-                <button
-                  onClick={() => onConfirmDelete(card.id)}
-                  disabled={busy}
-                  style={{ ...btnStyle(busy), background: '#ef4444', color: '#fff', borderColor: '#991b1b' }}
-                  aria-label="Potwierdź usunięcie"
-                >
-                  Tak, usuń
-                </button>
-              </div>
-            )}
-          </div>
+                Anuluj
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onConfirmDelete(card.id)}
+                disabled={busy}
+                aria-label="Potwierdź usunięcie"
+              >
+                Tak, usuń
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </li>
-  );
-}
-
-function btnStyle(disabled?: boolean): React.CSSProperties {
-  return {
-    padding: '8px 12px',
-    borderRadius: 8,
-    border: '1px solid #222',
-    background: disabled ? '#f1f5f9' : '#fff',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-  };
+  )
 }
 
 

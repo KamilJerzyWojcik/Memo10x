@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import type { CardDto } from '../types/cards';
-import CardForm from '../components/CardForm';
-import LoadingSpinner from '../components/LoadingSpinner';
-import AiGenerateButton from '../components/AiGenerateButton';
-import { useToast } from '../components/ToastProvider';
-import { ApiError } from '../services/apiClient';
-import { getCard, updateCard } from '../services/cardsApi';
-import { translate } from '../services/aiApi';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import type { CardDto } from '@/types/cards'
+import CardForm from '@/components/CardForm'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import AiGenerateButton from '@/components/AiGenerateButton'
+import { ApiError } from '@/services/apiClient'
+import { getCard, updateCard } from '@/services/cardsApi'
+import { translate } from '@/services/aiApi'
+import { FormPageLayout } from '@/components/layout/FormPageLayout'
+import { useAppToast } from '@/hooks/useAppToast'
 
 type GenerateState = 'idle' | 'loading' | 'error';
 
@@ -20,10 +21,10 @@ const MIN_LEN = 1;
 const MAX_LEN = 500;
 
 export default function EditCardPage() {
-  const { id } = useParams<{ id: string }>();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { showToast } = useToast();
+  const { id } = useParams<{ id: string }>()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { showToast } = useAppToast()
 
   const [sourceText, setSourceText] = useState('');
   const [targetText, setTargetText] = useState('');
@@ -245,40 +246,40 @@ export default function EditCardPage() {
   const canSubmit = dirty && !generating && !loading;
 
   return (
-    <div style={{ padding: 24, display: 'grid', gap: 16 }}>
-      <h1 style={{ margin: 0 }}>Edycja karty</h1>
-
-      {loading ? (
-        <div style={{ padding: 32, display: 'grid', placeItems: 'center', color: '#64748b' }}>
-          Trwa ładowanie karty...
-        </div>
-      ) : (
-        <CardForm
-          sourceText={sourceText}
-          targetText={targetText}
-          errors={errors}
-          generating={generating}
-          disableTargetWhileGenerating
-          submitting={submitting}
-          submitLabel="Zapisz"
-          canSubmit={canSubmit}
-          onSourceChange={onSourceChange}
-          onTargetChange={onTargetChange}
-          onGenerate={generate}
-          onSubmit={submit}
-          onCancel={onCancel}
-          sourceRef={sourceRef}
-          targetRef={targetRef}
-          sourceCount={sourceCount}
-          targetCount={targetCount}
-          maxLen={MAX_LEN}
-          GenerateButton={AiGenerateButton}
-        />
-      )}
-
+    <>
+      <FormPageLayout
+        title="Edycja karty"
+        description="Wprowadź poprawki do wybranego słówka i zapisz zmiany."
+      >
+        {loading ? (
+          <div className="grid place-items-center py-16 text-muted-foreground">Trwa ładowanie karty...</div>
+        ) : (
+          <CardForm
+            sourceText={sourceText}
+            targetText={targetText}
+            errors={errors}
+            generating={generating}
+            disableTargetWhileGenerating
+            submitting={submitting}
+            submitLabel="Zapisz"
+            canSubmit={canSubmit}
+            onSourceChange={onSourceChange}
+            onTargetChange={onTargetChange}
+            onGenerate={generate}
+            onSubmit={submit}
+            onCancel={onCancel}
+            sourceRef={sourceRef}
+            targetRef={targetRef}
+            sourceCount={sourceCount}
+            targetCount={targetCount}
+            maxLen={MAX_LEN}
+            GenerateButton={AiGenerateButton}
+          />
+        )}
+      </FormPageLayout>
       <LoadingSpinner show={loading || submitting} />
-    </div>
-  );
+    </>
+  )
 }
 
 

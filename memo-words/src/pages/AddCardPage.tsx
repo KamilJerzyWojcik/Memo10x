@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useToast } from '../components/ToastProvider';
-import LoadingSpinner from '../components/LoadingSpinner';
-import CardForm from '../components/CardForm';
-import AiGenerateButton from '../components/AiGenerateButton';
-import { translate } from '../services/aiApi';
-import { createCard } from '../services/cardsApi';
-import { ApiError } from '../services/apiClient';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import CardForm from '@/components/CardForm'
+import AiGenerateButton from '@/components/AiGenerateButton'
+import { translate } from '@/services/aiApi'
+import { createCard } from '@/services/cardsApi'
+import { ApiError } from '@/services/apiClient'
+import { FormPageLayout } from '@/components/layout/FormPageLayout'
+import { useAppToast } from '@/hooks/useAppToast'
 
 type GenerateState = 'idle' | 'loading' | 'error';
 
@@ -14,8 +15,8 @@ const MIN_LEN = 1;
 const MAX_LEN = 500;
 
 export default function AddCardPage() {
-  const navigate = useNavigate();
-  const { showToast } = useToast();
+  const navigate = useNavigate()
+  const { showToast } = useAppToast()
 
   const [sourceText, setSourceText] = useState('');
   const [targetText, setTargetText] = useState('');
@@ -169,32 +170,34 @@ export default function AddCardPage() {
   }, []);
 
   return (
-    <div style={{ padding: 24, display: 'grid', gap: 16 }}>
-      <h1 style={{ margin: 0 }}>Dodaj kartę</h1>
-
-      <CardForm
-        sourceText={sourceText}
-        targetText={targetText}
-        errors={errors}
-        generating={generating}
-        submitting={submitting}
-        disableTargetWhileGenerating
-        canSubmit={!generating}
-        submitLabel="Dodaj"
-        onSourceChange={onSourceChange}
-        onTargetChange={onTargetChange}
-        onGenerate={generate}
-        onSubmit={submit}
-        onCancel={onCancel}
-        sourceRef={sourceRef}
-        targetRef={targetRef}
-        sourceCount={sourceLen}
-        targetCount={targetLen}
-        maxLen={MAX_LEN}
-        GenerateButton={AiGenerateButton}
-      />
-
+    <>
+      <FormPageLayout
+        title="Dodaj kartę"
+        description="Wpisz słowo po angielsku, wygeneruj tłumaczenie i zapisz je w swojej kolekcji."
+      >
+        <CardForm
+          sourceText={sourceText}
+          targetText={targetText}
+          errors={errors}
+          generating={generating}
+          submitting={submitting}
+          disableTargetWhileGenerating
+          canSubmit={!generating}
+          submitLabel="Dodaj"
+          onSourceChange={onSourceChange}
+          onTargetChange={onTargetChange}
+          onGenerate={generate}
+          onSubmit={submit}
+          onCancel={onCancel}
+          sourceRef={sourceRef}
+          targetRef={targetRef}
+          sourceCount={sourceLen}
+          targetCount={targetLen}
+          maxLen={MAX_LEN}
+          GenerateButton={AiGenerateButton}
+        />
+      </FormPageLayout>
       <LoadingSpinner show={submitting} />
-    </div>
-  );
+    </>
+  )
 }

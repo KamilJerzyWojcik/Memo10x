@@ -1,34 +1,36 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import type { CardDto, PageSize, PagedResultDto } from '../types/cards';
-import { getCards, deleteCard } from '../services/cardsApi';
-import LoadingSpinner from '../components/LoadingSpinner';
-import Paginator from '../components/Paginator';
-import EmptyState from '../components/EmptyState';
-import { ApiError } from '../services/apiClient';
-import { useToast } from '../components/ToastProvider';
-import CardListItem from '../components/CardListItem';
-import CardsToolbar from '../components/CardsToolbar';
+import { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import type { CardDto, PageSize, PagedResultDto } from '@/types/cards'
+import { getCards, deleteCard } from '@/services/cardsApi'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import Paginator from '@/components/Paginator'
+import EmptyState from '@/components/EmptyState'
+import { ApiError } from '@/services/apiClient'
+import CardListItem from '@/components/CardListItem'
+import CardsToolbar from '@/components/CardsToolbar'
+import { Button } from '@/components/ui/button'
+import { ListPageLayout } from '@/components/layout/ListPageLayout'
+import { useAppToast } from '@/hooks/useAppToast'
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE: PageSize = 10;
 const ALLOWED_PAGE_SIZES: PageSize[] = [10, 50, 100];
 
 export default function CardsPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { showToast } = useToast();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { showToast } = useAppToast()
 
-  const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<CardDto[]>([]);
-  const [total, setTotal] = useState(0);
-  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
-  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false)
+  const [items, setItems] = useState<CardDto[]>([])
+  const [total, setTotal] = useState(0)
+  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set())
+  const [confirmingId, setConfirmingId] = useState<string | null>(null)
 
-  const [page, setPage] = useState<number>(DEFAULT_PAGE);
-  const [pageSize, setPageSize] = useState<PageSize>(DEFAULT_PAGE_SIZE);
-  const [highlightId, setHighlightId] = useState<string | null>(null);
-  const [reloadTick, setReloadTick] = useState(0);
+  const [page, setPage] = useState<number>(DEFAULT_PAGE)
+  const [pageSize, setPageSize] = useState<PageSize>(DEFAULT_PAGE_SIZE)
+  const [highlightId, setHighlightId] = useState<string | null>(null)
+  const [reloadTick, setReloadTick] = useState(0)
 
   // Wyczyść query string z URL przy pierwszym wejściu (zachowując state)
   useEffect(() => {
@@ -163,39 +165,37 @@ export default function CardsPage() {
   }, [items.length, page, showToast]);
 
   return (
-    <div style={{ padding: 24, display: 'grid', gap: 16 }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-        <h1 style={{ margin: 0 }}>Lista kart</h1>
-        <CardsToolbar
-          pageSize={pageSize}
-          allowedPageSizes={ALLOWED_PAGE_SIZES}
-          disabled={loading}
-          onPageSizeChange={onPageSizeChange}
-          onAdd={() => navigate('/cards/add')}
-        />
-      </header>
-
-      <section>
-        {items.length === 0 ? (
+    <>
+      <ListPageLayout
+        title="Lista kart"
+        description="Zarządzaj słówkami i tłumaczeniami w jednym miejscu."
+        primaryAction={
+          <Button size="lg" onClick={() => navigate('/cards/add')}>
+            Dodaj kartę
+          </Button>
+        }
+        toolbar={<CardsToolbar pageSize={pageSize} allowedPageSizes={ALLOWED_PAGE_SIZES} disabled={loading} onPageSizeChange={onPageSizeChange} />}
+        footer={
           <>
-            <EmptyState
-              title="Brak kart"
-              description="Dodaj pierwszą kartę, aby rozpocząć naukę."
-            />
+            <Paginator page={page} pageSize={pageSize} total={total} disabled={loading} onPageChange={onPageChange} />
+            <div className="text-sm text-muted-foreground">Razem: {total}</div>
+          </>
+        }
+      >
+        {items.length === 0 ? (
+          <div className="space-y-4">
+            <EmptyState title="Brak kart" description="Dodaj pierwszą kartę, aby rozpocząć naukę." />
             {page > 1 ? (
-              <div style={{ display: 'grid', placeItems: 'center' }}>
-                <button
-                  onClick={() => setPage(page - 1)}
-                  style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #222', background: '#fff' }}
-                >
+              <div className="flex justify-center">
+                <Button variant="ghost" onClick={() => setPage(page - 1)}>
                   Przejdź do poprzedniej strony
-                </button>
+                </Button>
               </div>
             ) : null}
-          </>
+          </div>
         ) : (
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 8 }}>
-            {items.map(card => (
+          <ul className="grid list-none gap-4 p-0">
+            {items.map((card) => (
               <CardListItem
                 key={card.id}
                 card={card}
@@ -211,24 +211,10 @@ export default function CardsPage() {
             ))}
           </ul>
         )}
-      </section>
-
-      <footer style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Paginator
-          page={page}
-          pageSize={pageSize}
-          total={total}
-          disabled={loading}
-          onPageChange={onPageChange}
-        />
-        <div style={{ color: '#64748b' }}>
-          Razem: {total}
-        </div>
-      </footer>
-
+      </ListPageLayout>
       <LoadingSpinner show={loading} />
-    </div>
-  );
+    </>
+  )
 }
 
 
