@@ -179,6 +179,8 @@ export default function AddCardPage() {
         generating={generating}
         submitting={submitting}
         disableTargetWhileGenerating
+        canSubmit={!generating}
+        submitLabel="Dodaj"
         onSourceChange={onSourceChange}
         onTargetChange={onTargetChange}
         onGenerate={generate}

@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import type { JSX, RefObject } from 'react';
 
 export interface CardFormProps {
   sourceText: string;
@@ -18,6 +18,8 @@ export interface CardFormProps {
   targetCount?: number;
   maxLen?: number;
   GenerateButton?: (props: { loading: boolean; disabled?: boolean; onClick: () => void }) => JSX.Element;
+  submitLabel?: string;
+  canSubmit?: boolean;
 }
 
 export default function CardForm(props: CardFormProps) {
@@ -39,9 +41,11 @@ export default function CardForm(props: CardFormProps) {
     targetCount,
     maxLen = 500,
     GenerateButton,
+    submitLabel = 'Dodaj',
+    canSubmit = true,
   } = props;
 
-  const SubmitDisabled = submitting || !!errors.sourceText || !!errors.targetText;
+  const SubmitDisabled = submitting || !!errors.sourceText || !!errors.targetText || !canSubmit;
   const GenerateDisabled = generating || !sourceText.trim();
 
   return (
@@ -99,7 +103,7 @@ export default function CardForm(props: CardFormProps) {
           disabled={SubmitDisabled}
           style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid #222', background: '#fff' }}
         >
-          Dodaj
+          {submitLabel}
         </button>
         <button
           type="button"

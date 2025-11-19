@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import CardsPage from './pages/CardsPage';
 import LoginPage from './pages/LoginPage';
 import AddCardPage from './pages/AddCardPage';
+import EditCardPage from './pages/EditCardPage';
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
   {
     path: '/cards/add',
     element: <AddCardPage />,
+  },
+  {
+    path: '/cards/:id/edit',
+    element: <EditCardPage />,
   },
   {
     path: '/login',

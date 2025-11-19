@@ -13,6 +13,11 @@ export interface CreateCardRequest {
   targetText: string;
 }
 
+export interface UpdateCardRequest {
+  sourceText?: string;
+  targetText?: string;
+}
+
 export interface PagedResultDto<T> {
   items: T[];
   page: number;

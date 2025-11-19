@@ -20,8 +20,8 @@ Drzewo komponentów:
 - @if `loading` → **LoadingSpinner**
 - **Toast** (globalny przez `ToastProvider`)
 - **CardForm** (tryb edycji; reuse istniejącego `CardForm`)
-  - Pola tekstowe `sourceText`, `targetText` (walidacja 1..500)
-  - **AiGenerateButton** (spinner; blokada edycji `targetText` w trakcie)
+- Pola tekstowe `sourceText`, `targetText` (walidacja 1..500)
+- **AiGenerateButton** (spinner; blokada edycji `targetText` w trakcie)
 - Stopka akcji: „Zapisz”, „Anuluj”
 
 ## 4. Szczegóły komponentów
@@ -71,11 +71,11 @@ Drzewo komponentów:
 - `CardDto`, `PagedResultDto`, `PageSize` (już używane w `CardsPage.tsx`)
 - Nowe/uzupełnione typy (FE):
 - `UpdateCardRequest`:
-  - `sourceText?: string`
-  - `targetText?: string`
+- `sourceText?: string`
+- `targetText?: string`
 - Lokalne w `EditCardPage.tsx`:
-  - `type GenerateState = 'idle' | 'loading' | 'error'`
-  - `type FormErrors = { sourceText?: string; targetText?: string }`
+- `type GenerateState = 'idle' | 'loading' | 'error'`
+- `type FormErrors = { sourceText?: string; targetText?: string }`
 
 ## 6. Zarządzanie stanem
 
