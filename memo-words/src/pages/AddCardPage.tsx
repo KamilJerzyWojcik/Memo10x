@@ -119,7 +119,7 @@ export default function AddCardPage() {
     setSubmitting(true);
     try {
       const created = await createCard({ sourceText: trimmedSource, targetText: trimmedTarget });
-      navigate(`/cards?page=1&highlightId=${encodeURIComponent(created.id)}`, { replace: true });
+      navigate('/cards', { replace: true, state: { highlightId: created.id } });
     } catch (err) {
       if (err instanceof ApiError) {
         if (err.status === 400) {
@@ -152,7 +152,7 @@ export default function AddCardPage() {
   }, [errors.sourceText, errors.targetText, navigate, showToast, trimmedSource, trimmedTarget, validateAll]);
 
   const onCancel = useCallback(() => {
-    navigate('/cards?page=1');
+    navigate('/cards');
   }, [navigate]);
 
   const sourceLen = useMemo(() => trimmedSource.length, [trimmedSource]);

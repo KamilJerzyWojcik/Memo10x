@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { CardDto, PageSize, PagedResultDto } from '../types/cards';
 import { getCards, deleteCard } from '../services/cardsApi';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -14,21 +14,8 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_PAGE_SIZE: PageSize = 10;
 const ALLOWED_PAGE_SIZES: PageSize[] = [10, 50, 100];
 
-function parsePage(value: string | null): number {
-  const n = Number(value);
-  if (!Number.isFinite(n) || n < 1) return DEFAULT_PAGE;
-  return Math.floor(n);
-}
-
-function parsePageSize(value: string | null): PageSize {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return DEFAULT_PAGE_SIZE;
-  const size = Math.floor(n) as PageSize;
-  return (ALLOWED_PAGE_SIZES as number[]).includes(size) ? size : DEFAULT_PAGE_SIZE;
-}
-
 export default function CardsPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { showToast } = useToast();
 
@@ -38,18 +25,24 @@ export default function CardsPage() {
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
-  const page = useMemo(() => parsePage(searchParams.get('page')), [searchParams]);
-  const pageSize = useMemo(() => parsePageSize(searchParams.get('pageSize')), [searchParams]);
-  const highlightId = useMemo(() => searchParams.get('highlightId'), [searchParams]);
+  const [page, setPage] = useState<number>(DEFAULT_PAGE);
+  const [pageSize, setPageSize] = useState<PageSize>(DEFAULT_PAGE_SIZE);
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const [reloadTick, setReloadTick] = useState(0);
 
-  const updateQuery = useCallback((next: { page?: number; pageSize?: PageSize }) => {
-    const nextPageSize = next.pageSize ?? pageSize;
-    const nextPage = next.page ?? page;
-    const params = new URLSearchParams(searchParams);
-    params.set('page', String(nextPage));
-    params.set('pageSize', String(nextPageSize));
-    setSearchParams(params, { replace: true });
-  }, [page, pageSize, searchParams, setSearchParams]);
+  // Wyczyść query string z URL przy pierwszym wejściu (zachowując state)
+  useEffect(() => {
+    if (location.search) {
+      navigate('/cards', { replace: true, state: location.state });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const s = (location.state as { highlightId?: string } | null)?.highlightId;
+    if (s) setHighlightId(s);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     let aborted = false;
@@ -67,20 +60,24 @@ export default function CardsPage() {
           if (err.status === 400) {
             showToast('warning', 'Nieprawidłowe parametry listy', {
               label: 'Przywróć domyślne',
-              onClick: () => updateQuery({ page: DEFAULT_PAGE, pageSize: DEFAULT_PAGE_SIZE }),
+              onClick: () => {
+                setPage(DEFAULT_PAGE);
+                setPageSize(DEFAULT_PAGE_SIZE);
+                setReloadTick(x => x + 1);
+              },
             });
             return;
           }
           // 5xx i inne
           showToast('error', 'Nie udało się pobrać. Spróbuj ponownie.', {
             label: 'Ponów',
-            onClick: () => updateQuery({}), // wywoła efekt ponownie
+            onClick: () => setReloadTick(x => x + 1),
           });
           return;
         }
         showToast('error', 'Błąd sieci. Spróbuj ponownie.', {
           label: 'Ponów',
-          onClick: () => updateQuery({}),
+          onClick: () => setReloadTick(x => x + 1),
         });
       })
       .finally(() => {
@@ -91,16 +88,17 @@ export default function CardsPage() {
       aborted = true;
       ac.abort();
     };
-  }, [page, pageSize, showToast, updateQuery]);
+  }, [page, pageSize, reloadTick, showToast]);
 
   const onPageChange = useCallback((nextPage: number) => {
     if (nextPage < 1) return;
-    updateQuery({ page: nextPage });
-  }, [updateQuery]);
+    setPage(nextPage);
+  }, []);
 
   const onPageSizeChange = useCallback((next: PageSize) => {
-    updateQuery({ page: 1, pageSize: next });
-  }, [updateQuery]);
+    setPage(1);
+    setPageSize(next);
+  }, []);
 
   const onEdit = useCallback((id: string) => {
     navigate(`/cards/${encodeURIComponent(id)}/edit`);
@@ -131,7 +129,7 @@ export default function CardsPage() {
         if (items.length === 1 && page > 1) {
           showToast('info', 'Brak elementów na tej stronie.', {
             label: `Przejdź do ${page - 1}`,
-            onClick: () => updateQuery({ page: page - 1 }),
+            onClick: () => setPage(page - 1),
           });
         }
       }, 0);
@@ -140,9 +138,9 @@ export default function CardsPage() {
         if (err.status === 404) {
           showToast('warning', 'Karta nie istnieje. Odświeżono.', {
             label: 'Odśwież',
-            onClick: () => updateQuery({}),
+            onClick: () => setReloadTick(x => x + 1),
           });
-          updateQuery({});
+          setReloadTick(x => x + 1);
         } else {
           showToast('error', 'Nie udało się usunąć. Spróbuj ponownie.', {
             label: 'Ponów',
@@ -162,7 +160,7 @@ export default function CardsPage() {
         return next;
       });
     }
-  }, [items.length, page, showToast, updateQuery]);
+  }, [items.length, page, showToast]);
 
   return (
     <div style={{ padding: 24, display: 'grid', gap: 16 }}>
@@ -187,7 +185,7 @@ export default function CardsPage() {
             {page > 1 ? (
               <div style={{ display: 'grid', placeItems: 'center' }}>
                 <button
-                  onClick={() => updateQuery({ page: page - 1 })}
+                  onClick={() => setPage(page - 1)}
                   style={{ padding: '8px 12px', borderRadius: 8, border: '1px solid #222', background: '#fff' }}
                 >
                   Przejdź do poprzedniej strony
