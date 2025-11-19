@@ -4,10 +4,8 @@ using MemoWords.Api.Application.Services;
 using MemoWords.Api.Application.Validation;
 using MemoWords.Api.Infrastructure.Auth;
 using MemoWords.Api.Infrastructure.Persistence;
-using MemoWords.Api.Application.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.RateLimiting;
-using System.Reflection;
 
 namespace MemoWords.Api
 {
@@ -16,6 +14,19 @@ namespace MemoWords.Api
         public static void Main(string[] args)
         {
 			var builder = WebApplication.CreateBuilder(args);
+			
+			// CORS
+			const string corsPolicyName = "AllowLocalhost5173";
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy(corsPolicyName, policy =>
+				{
+					policy
+						.WithOrigins("http://localhost:5173", "http://localhost:4173")
+						.AllowAnyHeader()
+						.AllowAnyMethod();
+				});
+			});
 
 			// DbContext i PostgreSQL
 			var connectionString = builder.Configuration.GetConnectionString("Default")
@@ -69,6 +80,9 @@ namespace MemoWords.Api
 					c.RoutePrefix = "swagger";
 				});
 			}
+
+			// CORS middleware
+			app.UseCors(corsPolicyName);
 
 			app.UseRateLimiter();
 
