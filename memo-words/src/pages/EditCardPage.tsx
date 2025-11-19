@@ -9,6 +9,7 @@ import { getCard, updateCard } from '@/services/cardsApi'
 import { translate } from '@/services/aiApi'
 import { FormPageLayout } from '@/components/layout/FormPageLayout'
 import { useAppToast } from '@/hooks/useAppToast'
+import { formatDateTime } from '@/utils/format'
 
 type GenerateState = 'idle' | 'loading' | 'error';
 
@@ -106,6 +107,10 @@ export default function EditCardPage() {
       setLoading(false);
     }
   }, [applyCard, handleMissingCard, showToast]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [])
 
   useEffect(() => {
     const cardId = id?.trim();
@@ -230,7 +235,7 @@ export default function EditCardPage() {
     }
   }, [dirty, handleMissingCard, id, navigate, showToast, trimmedSource, trimmedTarget, validateAll]);
 
-  const onCancel = useCallback(() => {
+  const goBack = useCallback(() => {
     navigate('/cards');
   }, [navigate]);
 
@@ -244,12 +249,53 @@ export default function EditCardPage() {
 
   const generating = generateState === 'loading';
   const canSubmit = dirty && !generating && !loading;
+  const initialCard = initialCardRef.current;
+
+  const editHighlights = [
+    {
+      label: 'Ostatnia edycja',
+      value: initialCard ? formatDateTime(initialCard.updatedAt) : '—',
+      description: 'Kiedy ostatnio dopracowałeś tę fiszkę.',
+    },
+    {
+      label: 'Status zmian',
+      value: dirty ? 'W toku' : 'Aktualna',
+      description: dirty ? 'Masz niezapisane poprawki.' : 'Brak niezapisanych zmian.',
+    },
+    {
+      label: 'Długość tłumaczenia',
+      value: `${targetCount}/${MAX_LEN}`,
+      description: 'Kontroluj długość treści przed zapisem.',
+    },
+  ];
 
   return (
     <>
       <FormPageLayout
         title="Edycja karty"
-        description="Wprowadź poprawki do wybranego słówka i zapisz zmiany."
+        description="Wprowadź poprawki do wybranego słówka i zapisz zmiany – utrzymuj swoje fiszki w perfekcyjnej kondycji."
+        eyebrow="Powrót do trasy"
+        emoji="🛠️"
+        secondaryAction={
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground transition hover:border-white/30 hover:text-foreground"
+          >
+            ← Powrót do listy
+          </button>
+        }
+        aside={
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {editHighlights.map((fact) => (
+              <div key={fact.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-muted-foreground">
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/70">{fact.label}</p>
+                <p className="mt-2 text-2xl font-semibold text-foreground">{fact.value}</p>
+                <p className="mt-1 text-xs">{fact.description}</p>
+              </div>
+            ))}
+          </div>
+        }
       >
         {loading ? (
           <div className="grid place-items-center py-16 text-muted-foreground">Trwa ładowanie karty...</div>
@@ -267,7 +313,7 @@ export default function EditCardPage() {
             onTargetChange={onTargetChange}
             onGenerate={generate}
             onSubmit={submit}
-            onCancel={onCancel}
+            onCancel={goBack}
             sourceRef={sourceRef}
             targetRef={targetRef}
             sourceCount={sourceCount}

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { PageShell } from './PageShell'
 import { PageHeader } from './PageHeader'
-import { Card } from '@/components/ui/card'
+import { Section } from './Section'
 
 interface FormPageLayoutProps {
   title: string
@@ -9,16 +9,26 @@ interface FormPageLayoutProps {
   primaryAction?: ReactNode
   children: ReactNode
   aside?: ReactNode
+  eyebrow?: string
+  emoji?: string
+  secondaryAction?: ReactNode
 }
 
-export function FormPageLayout({ title, description, primaryAction, children, aside }: FormPageLayoutProps) {
+export function FormPageLayout({ title, description, primaryAction, children, aside, eyebrow, emoji, secondaryAction }: FormPageLayoutProps) {
   return (
     <PageShell>
-      <PageHeader title={title} description={description} primaryAction={primaryAction} />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-        <Card className="p-6">{children}</Card>
-        {aside ? <div className="space-y-4">{aside}</div> : null}
-      </div>
+      <PageHeader
+        title={title}
+        description={description}
+        primaryAction={primaryAction}
+        secondaryAction={secondaryAction}
+        eyebrow={eyebrow}
+        emoji={emoji}
+        secondaryContent={
+          <div className="rounded-[32px] border border-white/10 bg-[#140f20]/90 p-6 shadow-[var(--shadow-lg)]">{children}</div>
+        }
+      />
+      {aside ? <Section className="space-y-4">{aside}</Section> : null}
     </PageShell>
   )
 }

@@ -116,12 +116,21 @@
     line-height: var(--line-height-base);
     color: var(--color-fg);
     background-color: var(--color-bg);
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255, 145, 122, 0.15), transparent 45%),
+      radial-gradient(circle at 80% 0%, rgba(255, 122, 92, 0.25), transparent 55%),
+      linear-gradient(180deg, #08060d 0%, #0f0b16 45%, #14121d 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    transition: background 300ms ease;
     -webkit-font-smoothing: antialiased;
   }
 
   #root {
     min-height: 100vh;
-    background-color: var(--color-bg);
+    background-color: transparent;
+    background-image: inherit;
   }
 
   h1, h2, h3, h4, h5, h6 {

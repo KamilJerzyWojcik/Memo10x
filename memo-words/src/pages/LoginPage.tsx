@@ -1,38 +1,40 @@
 import { useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { PageShell } from '@/components/layout/PageShell'
-import { Section } from '@/components/layout/Section'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/button'
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams()
   const returnUrl = useMemo(() => searchParams.get('returnUrl') ?? '/', [searchParams])
 
+  const goToSupabase = () => {
+    window.location.assign(`/auth/sign-in?returnUrl=${encodeURIComponent(returnUrl)}`)
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-bg-subtle">
-      <div className="mx-auto flex w-full max-w-xl flex-col gap-6 px-4 py-12 sm:px-6">
-        <PageShell>
-          <Section>
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm uppercase tracking-wide text-muted-foreground">MemoWords</p>
-                <h1 className="text-3xl font-semibold text-foreground">Logowanie</h1>
-                <p className="text-base text-muted-foreground">Brak sesji. Zaloguj się, aby kontynuować naukę słówek.</p>
-              </div>
-              <div className="rounded-2xl border border-dashed border-border bg-muted/50 p-4 text-sm text-muted-foreground">
-                Po zalogowaniu wrócisz do: <code className="rounded bg-card px-2 py-1 text-foreground">{returnUrl}</code>
-              </div>
-              <Button size="lg" className="w-full" onClick={() => window.location.assign(`/auth/sign-in?returnUrl=${encodeURIComponent(returnUrl)}`)}>
-                Przejdź do logowania Supabase
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                (Placeholder) Tutaj zostanie umieszczony formularz logowania Supabase lub redirect do hostowanej strony logowania.
-              </p>
+    <PageShell>
+      <PageHeader
+        title="Zaloguj się i odzyskaj swoje wyprawy językowe"
+        description="Twoje słówka czekają w prywatnej kolekcji. Wejdź ponownie na pokład MemoWords, aby kontynuować naukę bez przestojów."
+        eyebrow="Start wyprawy"
+        emoji="🧳"
+        secondaryContent={
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-4 text-sm text-muted-foreground">
+              Po zalogowaniu wrócisz do:{' '}
+              <code className="rounded bg-black/30 px-2 py-1 font-mono text-primary">{returnUrl}</code>
             </div>
-          </Section>
-        </PageShell>
-      </div>
-    </div>
+            <Button size="lg" className="w-full" onClick={goToSupabase}>
+              Przejdź do logowania Supabase
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              Placeholder: tutaj pojawi się embed formularza Supabase lub pełny redirect do hostowanej strony logowania.
+            </p>
+          </div>
+        }
+      />
+    </PageShell>
   )
 }
 

@@ -7,7 +7,7 @@ interface PageShellProps {
 }
 
 export function PageShell({ children, className }: PageShellProps) {
-  return <div className={cn('flex w-full flex-col gap-8', className)}>{children}</div>
+  return <div className={cn('flex w-full flex-col gap-10', className)}>{children}</div>
 }
 
 

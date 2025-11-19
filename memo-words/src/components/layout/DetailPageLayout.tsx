@@ -9,16 +9,30 @@ interface DetailPageLayoutProps {
   primaryAction?: ReactNode
   children: ReactNode
   sidePanel?: ReactNode
+  eyebrow?: string
+  emoji?: string
 }
 
-export function DetailPageLayout({ title, description, primaryAction, children, sidePanel }: DetailPageLayoutProps) {
+export function DetailPageLayout({
+  title,
+  description,
+  primaryAction,
+  children,
+  sidePanel,
+  eyebrow,
+  emoji,
+}: DetailPageLayoutProps) {
   return (
     <PageShell>
-      <PageHeader title={title} description={description} primaryAction={primaryAction} />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-        <Section>{children}</Section>
-        {sidePanel ? <Section>{sidePanel}</Section> : null}
-      </div>
+      <PageHeader
+        title={title}
+        description={description}
+        primaryAction={primaryAction}
+        eyebrow={eyebrow}
+        emoji={emoji}
+        secondaryContent={sidePanel ? <Section>{sidePanel}</Section> : undefined}
+      />
+      <Section>{children}</Section>
     </PageShell>
   )
 }

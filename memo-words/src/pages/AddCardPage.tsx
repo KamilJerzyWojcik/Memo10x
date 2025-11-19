@@ -8,6 +8,7 @@ import { createCard } from '@/services/cardsApi'
 import { ApiError } from '@/services/apiClient'
 import { FormPageLayout } from '@/components/layout/FormPageLayout'
 import { useAppToast } from '@/hooks/useAppToast'
+import { formatDateTime } from '@/utils/format'
 
 type GenerateState = 'idle' | 'loading' | 'error';
 
@@ -23,6 +24,7 @@ export default function AddCardPage() {
   const [errors, setErrors] = useState<{ sourceText?: string; targetText?: string }>({});
   const [generateState, setGenerateState] = useState<GenerateState>('idle');
   const [submitting, setSubmitting] = useState(false);
+  const [lastEditAt, setLastEditAt] = useState<Date | null>(null);
 
   const requestIdRef = useRef(0);
   const acRef = useRef<AbortController | null>(null);
@@ -48,15 +50,19 @@ export default function AddCardPage() {
     return nextErrors;
   }, [sourceText, targetText, validateField]);
 
+  const markEdited = useCallback(() => setLastEditAt(new Date()), []);
+
   const onSourceChange = useCallback((v: string) => {
     setSourceText(v);
     setErrors(prev => ({ ...prev, sourceText: validateField(v) }));
-  }, [validateField]);
+    markEdited();
+  }, [markEdited, validateField]);
 
   const onTargetChange = useCallback((v: string) => {
     setTargetText(v);
     setErrors(prev => ({ ...prev, targetText: validateField(v) }));
-  }, [validateField]);
+    markEdited();
+  }, [markEdited, validateField]);
 
   const generate = useCallback(async () => {
     if (generateState === 'loading') return;
@@ -79,6 +85,7 @@ export default function AddCardPage() {
       if (requestIdRef.current !== myId) return;
       setTargetText(res.translation);
       setErrors(prev => ({ ...prev, targetText: validateField(res.translation) }));
+      markEdited();
       setGenerateState('idle');
       // focus on target
       setTimeout(() => targetRef.current?.focus(), 0);
@@ -104,7 +111,7 @@ export default function AddCardPage() {
         showToast('error', 'Błąd sieci. Spróbuj ponownie.', { label: 'Ponów', onClick: generate });
       }
     }
-  }, [generateState, showToast, sourceText, trimmedSource, validateField]);
+  }, [generateState, markEdited, showToast, sourceText, trimmedSource, validateField]);
 
   const submit = useCallback(async () => {
     const currentErrors = validateAll();
@@ -152,7 +159,7 @@ export default function AddCardPage() {
     }
   }, [errors.sourceText, errors.targetText, navigate, showToast, trimmedSource, trimmedTarget, validateAll]);
 
-  const onCancel = useCallback(() => {
+  const goBack = useCallback(() => {
     navigate('/cards');
   }, [navigate]);
 
@@ -162,6 +169,7 @@ export default function AddCardPage() {
   const generating = generateState === 'loading';
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
     return () => {
       if (acRef.current) {
         try { acRef.current.abort(); } catch {}
@@ -169,11 +177,56 @@ export default function AddCardPage() {
     };
   }, []);
 
+  const startedAtRef = useRef<Date>(new Date())
+  const startedAtLabel = useMemo(() => formatDateTime(startedAtRef.current), [])
+  const lastEditLabel = useMemo(() => (lastEditAt ? formatDateTime(lastEditAt) : startedAtLabel), [lastEditAt, startedAtLabel])
+  const hasChanges = sourceLen > 0 || targetLen > 0
+
+  const creationHighlights = [
+    {
+      label: 'Ostatnia edycja',
+      value: lastEditLabel,
+      description: hasChanges ? 'Właśnie dopracowujesz nową fiszkę.' : 'Start formularza dla nowej fiszki.',
+    },
+    {
+      label: 'Status zmian',
+      value: hasChanges ? 'W toku' : 'Czysty',
+      description: hasChanges ? 'Masz niezapisane pomysły.' : 'Jeszcze nic nie wpisano.',
+    },
+    {
+      label: 'Długość tłumaczenia',
+      value: `${targetLen}/${MAX_LEN}`,
+      description: 'Kontroluj długość treści przed zapisem.',
+    },
+  ]
+
   return (
     <>
       <FormPageLayout
         title="Dodaj kartę"
-        description="Wpisz słowo po angielsku, wygeneruj tłumaczenie i zapisz je w swojej kolekcji."
+        description="Wpisz słowo po angielsku, wygeneruj tłumaczenie i zapisz je w swojej kolekcji – jak plan kolejnej podróży."
+        eyebrow="Nowa przygoda"
+        emoji="🚀"
+        secondaryAction={
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground transition hover:border-white/30 hover:text-foreground"
+          >
+            ← Powrót do listy
+          </button>
+        }
+        aside={
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {creationHighlights.map((fact) => (
+              <div key={fact.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-muted-foreground">
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/70">{fact.label}</p>
+                <p className="mt-2 text-2xl font-semibold text-foreground">{fact.value}</p>
+                <p className="mt-1 text-xs">{fact.description}</p>
+              </div>
+            ))}
+          </div>
+        }
       >
         <CardForm
           sourceText={sourceText}
@@ -188,7 +241,7 @@ export default function AddCardPage() {
           onTargetChange={onTargetChange}
           onGenerate={generate}
           onSubmit={submit}
-          onCancel={onCancel}
+          onCancel={goBack}
           sourceRef={sourceRef}
           targetRef={targetRef}
           sourceCount={sourceLen}

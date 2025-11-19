@@ -11,7 +11,12 @@ interface SectionProps {
 
 export function Section({ title, description, aside, children, className }: SectionProps) {
   return (
-    <section className={cn('rounded-3xl border border-border/60 bg-card/90 p-6 shadow-[var(--shadow-sm)] backdrop-blur-sm', className)}>
+    <section
+      className={cn(
+        'rounded-[30px] border border-white/10 bg-[#120b1b]/80 p-6 shadow-[var(--shadow-md)] ring-1 ring-black/20 backdrop-blur-lg',
+        className,
+      )}
+    >
       {(title || description || aside) && (
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>

@@ -176,27 +176,39 @@ export default function CardsPage() {
     }
   }, [items.length, page, showToast]);
 
+  const heroAside = (
+    <div className="space-y-4 text-sm text-muted-foreground">
+      <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground/80">Twoje statystyki</p>
+      <div className="rounded-[30px] border border-white/10 bg-white/5 p-6 text-center shadow-[var(--shadow-md)]">
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">Łącznie</div>
+        <div className="text-4xl font-semibold text-foreground">{total}</div>
+        <div className="text-xs text-muted-foreground">fiszek zapisanych w kolekcji</div>
+      </div>
+      <p className="text-xs text-muted-foreground/70">
+        Każda zapisana fiszka to kolejna przygoda językowa. Złap rytm i rozwijaj kolekcję!
+      </p>
+    </div>
+  )
+
   return (
     <>
       <ListPageLayout
         title="Lista kart"
-        description="Zarządzaj słówkami i tłumaczeniami w jednym miejscu."
+        description="Zarządzaj słówkami i tłumaczeniami w jednym miejscu – jak plan podróży po ulubionych krajach."
+        eyebrow="Twoja trasa nauki"
+        emoji="🧭"
         primaryAction={
           <Button size="lg" onClick={() => navigate('/cards/add')}>
             Dodaj kartę
           </Button>
         }
+        heroAside={heroAside}
         toolbar={<CardsToolbar pageSize={pageSize} allowedPageSizes={ALLOWED_PAGE_SIZES} disabled={loading} onPageSizeChange={onPageSizeChange} />}
-        footer={
-          <>
-            <Paginator page={page} pageSize={pageSize} total={total} disabled={loading} onPageChange={onPageChange} />
-            <div className="text-sm text-muted-foreground">Razem: {total}</div>
-          </>
-        }
+        footer={<Paginator page={page} pageSize={pageSize} total={total} disabled={loading} onPageChange={onPageChange} />}
       >
         {items.length === 0 ? (
           <div className="space-y-4">
-            <EmptyState title="Brak kart" description="Dodaj pierwszą kartę, aby rozpocząć naukę." />
+            <EmptyState title="Brak kart" description="Dodaj pierwszą kartę, aby rozpocząć naukę." emoji="🌌" />
             {page > 1 ? (
               <div className="flex justify-center">
                 <Button variant="ghost" onClick={() => setPage(page - 1)}>
