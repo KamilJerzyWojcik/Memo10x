@@ -1,5 +1,5 @@
 Frontend - Angular:
-- Angular 20 zapewni interaktywność tam, gdzie jest potrzebna
+- React 19
 - TypeScript 5 dla statycznego typowania kodu i lepszego wsparcia IDE
 - scss pozwala na stylowanie aplikacji
 

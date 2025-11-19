@@ -209,7 +209,6 @@ US-017
 - Tytuł: Anulowanie dodawania karty
 - Opis: Jako użytkownik chcę móc zamknąć dialog bez dodania karty.
 - Kryteria akceptacji:
-  - Zamknięcie dialogu przed zapisem rejestruje dialog_add_canceled.
   - Taka sesja wchodzi do mianownika metryki akceptacji.
 
 US-018
