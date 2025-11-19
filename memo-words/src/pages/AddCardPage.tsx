@@ -184,7 +184,7 @@ export default function AddCardPage() {
 
   const creationHighlights = [
     {
-      label: 'Ostatnia edycja',
+      label: hasChanges ? 'Ostatnia zmiana' : 'Rozpoczęto',
       value: lastEditLabel,
       description: hasChanges ? 'Właśnie dopracowujesz nową fiszkę.' : 'Start formularza dla nowej fiszki.',
     },
