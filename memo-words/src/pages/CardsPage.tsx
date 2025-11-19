@@ -41,10 +41,22 @@ export default function CardsPage() {
   }, []);
 
   useEffect(() => {
-    const s = (location.state as { highlightId?: string } | null)?.highlightId;
-    if (s) setHighlightId(s);
+    const state = location.state as { highlightId?: string } | null;
+    if (!state?.highlightId) return;
+    setHighlightId(state.highlightId);
+    const { highlightId: _, ...rest } = state;
+    navigate(location.pathname, {
+      replace: true,
+      state: Object.keys(rest).length ? rest : null,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!highlightId) return;
+    const timer = window.setTimeout(() => setHighlightId(null), 1200);
+    return () => window.clearTimeout(timer);
+  }, [highlightId]);
 
   useEffect(() => {
     let aborted = false;
