@@ -1,0 +1,78 @@
+---
+globs: *.css,*.js,*.tsx,*.scss
+alwaysApply: false
+---
+## FRONTEND
+
+### Guidelines for REACT
+
+#### REACT_CODING_STANDARDS
+
+- Use functional components with hooks instead of class components
+- Implement React.memo() for expensive components that render often with the same props
+- Utilize React.lazy() and Suspense for code-splitting and performance optimization
+- Use the useCallback hook for event handlers passed to child components to prevent unnecessary re-renders
+- Prefer useMemo for expensive calculations to avoid recomputation on every render
+- Implement useId() for generating unique IDs for accessibility attributes
+- Use the new use hook for data fetching in React 19+ projects
+- Leverage Server Components for {{data_fetching_heavy_components}} when using React with Next.js or similar frameworks
+- Consider using the new useOptimistic hook for optimistic UI updates in forms
+- Use useTransition for non-urgent state updates to keep the UI responsive
+
+
+
+## FRONTEND
+
+### Guidelines for REACT
+
+#### REACT_ROUTER
+
+- Use createBrowserRouter instead of BrowserRouter for better data loading and error handling
+- Implement lazy loading with React.lazy() for route components to improve initial load time
+- Use the useNavigate hook instead of the navigate component prop for programmatic navigation
+- Leverage loader and action functions to handle data fetching and mutations at the route level
+- Implement error boundaries with errorElement to gracefully handle routing and data errors
+- Use relative paths with dot notation (e.g., "../parent") to maintain route hierarchy flexibility
+- Utilize the useRouteLoaderData hook to access data from parent routes
+- Implement fetchers for non-navigation data mutations
+- Use route.lazy() for route-level code splitting with automatic loading states
+- Implement shouldRevalidate functions to control when data revalidation happens after navigation
+
+
+
+## FRONTEND
+
+### Guidelines for STYLING
+
+#### STYLED_COMPONENTS
+
+- Use the ThemeProvider for consistent theming across components
+- Implement the css helper for sharing styles between components
+- Use props for conditional styling within template literals
+- Leverage the createGlobalStyle for global styling
+- Implement attrs method to pass HTML attributes to the underlying DOM elements
+- Use the as prop for dynamic component rendering
+- Leverage styled(Component) syntax for extending existing components
+- Implement the css prop for one-off styling needs
+- Use the & character for nesting selectors
+- Leverage the keyframes helper for animations
+
+
+
+## FRONTEND
+
+### Guidelines for STYLING
+
+#### SCSS
+
+- Use the ThemeProvider for consistent theming across components
+- Implement the css helper for sharing styles between components
+- Use props for conditional styling within template literals
+- Leverage the createGlobalStyle for global styling
+- Implement attrs method to pass HTML attributes to the underlying DOM elements
+- Use the as prop for dynamic component rendering
+- Leverage styled(Component) syntax for extending existing components
+- Implement the css prop for one-off styling needs
+- Use the & character for nesting selectors
+- Leverage the keyframes helper for animations
+
