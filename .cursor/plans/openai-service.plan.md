@@ -171,7 +171,6 @@ public class TranslationResponse
 }
 ```
 
-
 ### To-dos
 
 - [ ] Zainstaluj pakiet NuGet OpenAI w projekcie API

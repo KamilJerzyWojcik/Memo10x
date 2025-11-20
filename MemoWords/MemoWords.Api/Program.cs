@@ -3,7 +3,9 @@ using FluentValidation.AspNetCore;
 using MemoWords.Api.Application.Services;
 using MemoWords.Api.Application.Validation;
 using MemoWords.Api.Infrastructure.Auth;
+using MemoWords.Api.Infrastructure.Configuration;
 using MemoWords.Api.Infrastructure.Persistence;
+
 using Microsoft.EntityFrameworkCore;
 using System.Threading.RateLimiting;
 
@@ -44,8 +46,11 @@ namespace MemoWords.Api
 			builder.Services.AddValidatorsFromAssemblyContaining<TranslateRequestValidator>();
 
 			// DI
+			builder.Services.Configure<OpenAiSettings>(builder.Configuration.GetSection("OpenAI"));
 			builder.Services.AddScoped<ICardService, CardService>();
-			builder.Services.AddScoped<IAiTranslationService, MockAiTranslationService>();
+            builder.Services.AddScoped<IOpenAiService, OpenAiService>();
+			// builder.Services.AddScoped<IAiTranslationService, MockAiTranslationService>(); 
+            builder.Services.AddScoped<IAiTranslationService, AiTranslationService>();
 			builder.Services.AddSingleton<IUserContext, MockUserContext>();
 
 			// Rate Limiting (polityka 'translate')
