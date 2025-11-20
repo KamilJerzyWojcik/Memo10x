@@ -2,7 +2,7 @@
 
 ## 1. Przegląd struktury UI
 
-MemoWords to aplikacja webowa (Angular 20, standalone components, Signals) zaprojektowana mobile‑first. UI składa się z czterech głównych widoków: lista kart, dodawanie, edycja oraz prosty ekran logowania (placeholder pod przyszłe auth). Nawigacja odbywa się poprzez ścieżki: `/login`, `/cards`, `/cards/add`, `/cards/:id/edit`, z przekierowaniem z `/` do `/cards`. Lista używa paginacji sterowanej parametrami zapytania `page` i `pageSize` (10/50/100).
+MemoWords to aplikacja webowa (React, standalone components, Signals) zaprojektowana mobile‑first. UI składa się z czterech głównych widoków: lista kart, dodawanie, edycja oraz prosty ekran logowania (placeholder pod przyszłe auth). Nawigacja odbywa się poprzez ścieżki: `/login`, `/cards`, `/cards/add`, `/cards/:id/edit`, z przekierowaniem z `/` do `/cards`. Lista używa paginacji sterowanej parametrami zapytania `page` i `pageSize` (10/50/100).
 
 - Architektura uwzględnia integrację z backendem REST (prefiks `/api/v1`) i przygotowanie pod Supabase JWT (w MVP mock użytkownika po stronie backendu). 
 - Bezpieczeństwo: wszystkie żądania do `/api/v1/*` zakładają nagłówek `Authorization: Bearer <token>` (interceptor gotowy na wpięcie tokenu); w MVP ekran `/login` pełni rolę informacyjną.

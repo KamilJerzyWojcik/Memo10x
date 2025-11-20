@@ -1,7 +1,7 @@
 # Plan REST API
 
 Wersja: v1  
-Odbiorcy: Zespoły backend (.NET 9, EF Core, Supabase) i frontend (Angular 20)  
+Odbiorcy: Zespoły backend (.NET 9, EF Core, Supabase) i frontend (React)  
 Uwierzytelnianie: Supabase JWT (Authorization: Bearer <token>) walidowany w backendzie względem Supabase JWKS
 
 ## 1. Zasoby

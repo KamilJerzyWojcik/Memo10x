@@ -8,7 +8,6 @@
 4. Generowanie AI: zablokować edycję `targetText` podczas żądania, spinner, możliwość anulowania poprzedniego żądania (AbortController), obsługa 429/502/504 z akcją „Ponów”.
 5. Telemetria zdarzeń: wyłączona w MVP (brak rejestrowania eventów).
 6. Uwierzytelnianie: do wdrożenia później; tymczasowo backend używa mocka użytkownika (`d8985899-2145-4139-a92e-1e35b8bc6f83`).
-7. Zarządzanie stanem: użyć Angular Signals w najprostszym wariancie.
 8. Obsługa błędów: globalny `HttpInterceptor` mapujący 422/400 na błędy pól, 401 na ścieżkę reauth, 404/409/5xx na toast + retry; 504 (AI) z komunikatem i „Ponów”.
 9. Styl i prostota: najlepsze praktyki + clean code, minimalna złożoność.
 10. UI: bez bibliotek zewnętrznych; własne komponenty i SCSS inspirowane stylem Picassa.

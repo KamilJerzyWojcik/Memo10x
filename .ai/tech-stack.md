@@ -1,4 +1,4 @@
-Frontend - Angular:
+Frontend - React:
 - React 19
 - TypeScript 5 dla statycznego typowania kodu i lepszego wsparcia IDE
 - scss pozwala na stylowanie aplikacji
