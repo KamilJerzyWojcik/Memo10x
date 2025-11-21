@@ -1,3 +1,5 @@
 .ai/
 .cursor/
 node_modules/
+openai_keys.md
+supabase_keys.md
