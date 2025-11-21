@@ -98,6 +98,7 @@ US-001
   - Po sukcesie jestem zalogowany i widzę pustą listę kart lub istniejące karty.
   - Nie ma weryfikacji e‑mail ani resetu hasła.
 
+
 US-002
 - Tytuł: Logowanie do konta
 - Opis: Jako istniejący użytkownik chcę się zalogować, aby uzyskać dostęp do moich kart.
@@ -217,6 +218,16 @@ US-018
 - Kryteria akceptacji:
   - Elementy interaktywne mają odpowiednie rozmiary dotykowe.
   - Kluczowe przepływy (dodanie, edycja, usunięcie) są w pełni wykonalne na telefonie.
+
+
+US-019
+- Tytuł: reset hasla
+- Opis: Jako nowy użytkownik chcę resetowac hasło do konta, aby móc zalogowac sie kiedy zapomnę haslo.
+- Kryteria akceptacji:
+  - Mogę podać e‑mail
+  - Sprawdzana jest poprawnosc regexem adres email
+  - wysylany jest email do zmiany hasla
+  - moge przez link zmienic haslo do konta
 
 
 ## 6. Metryki sukcesu

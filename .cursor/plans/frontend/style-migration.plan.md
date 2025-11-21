@@ -31,7 +31,7 @@
 - **Pola formularza** (`input.tsx`, `textarea.tsx`):
 - Dodaj subtelny `focus` efekt: poświata w kolorze akcentu (`ring-primary`, `shadow-[0_0_0_1px_*]`), płynne przejście koloru tła.
 - **Karty / sekcje** (`card.tsx`, `layout/Section.tsx`, `layout/ListPageLayout.tsx`):
-- Wejście kart przy ładowaniu: `animate-[fadeInUp_0.4s_ease-out]` definiowane w `globals.css` (keyframes fade+slide up).
+- Wejście kart przy ładowaniu: `animate-[fadeInUp_0.4s_ease-out] `definiowane w `globals.css` (keyframes fade+slide up).
 - Hover na kartach ciekawostek/listy: minimalny `scale-105` i `shadow-lg` z `transition-transform`.
 
 ### 4. System „ciekawych rzeczy” przy każdej akcji
@@ -59,7 +59,7 @@
 ### 6. Animowany background i drobne detale brandowe
 
 - **Tło aplikacji** (`globals.css` + `AppShell.tsx`):
-- Dodaj bardzo powolny animowany gradient (np. `@keyframes gradientShift`) używany jako `bg-[radial-gradient(...)]` na pseudoelemencie lub dedykowanym divie w `AppShell`.
+- Dodaj bardzo powolny animowany gradient (np. `@keyframes gradientShift`) używany jako `bg-[radial-gradient(...)] `na pseudoelemencie lub dedykowanym divie w `AppShell`.
 - Utrzymaj animację subtelną (ok. 20–30s cyklu, niewielka zmiana kolorów), by nie męczyć użytkownika.
 - **Branding MemoWords**:
 - Zaktualizuj „MW” w headerze (`AppShell.tsx`), by pasował do nowego motywu: ciemna karta + jasny koralowy gradient w tle avatara.
