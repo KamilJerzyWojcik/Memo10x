@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppToast } from '@/hooks/useAppToast'
 import { loginFormSchema, type LoginFormValues } from '@/validation/forms'
+import { supabase } from '@/services/supabase'
 
 export interface LoginPageProps {
   returnUrl?: string
@@ -25,11 +26,22 @@ export default function LoginPage({ returnUrl = '/' }: LoginPageProps) {
     defaultValues: { email: '', password: '' },
   })
 
-  const onSubmit = async (_values: LoginFormValues) => {
-    // Placeholder: brak połączenia z backendem/Supabase na tym etapie
-    showToast('success', 'Udane logowanie (UI demo)')
-    // Przekierowanie na returnUrl (na razie bez realnej sesji)
-    navigate(returnUrl, { replace: true })
+  const onSubmit = async (values: LoginFormValues) => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      })
+      if (error) {
+        showToast('error', error.message || 'Nie udało się zalogować.')
+        return
+      }
+      showToast('success', 'Zalogowano pomyślnie')
+      navigate(returnUrl, { replace: true })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Wystąpił błąd logowania.'
+      showToast('error', message)
+    }
   }
 
   return (

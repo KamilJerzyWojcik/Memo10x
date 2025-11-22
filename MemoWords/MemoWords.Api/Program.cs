@@ -8,6 +8,9 @@ using MemoWords.Api.Infrastructure.Persistence;
 
 using Microsoft.EntityFrameworkCore;
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MemoWords.Api
 {
@@ -44,6 +47,29 @@ namespace MemoWords.Api
 			builder.Services.AddFluentValidationAutoValidation();
 			builder.Services.AddValidatorsFromAssemblyContaining<CreateCardRequestValidator>();
 			builder.Services.AddValidatorsFromAssemblyContaining<TranslateRequestValidator>();
+
+			// JWT Bearer (Supabase)
+			var supabaseUrl = builder.Configuration["Supabase:Url"];
+			var supabaseJwtSecret = builder.Configuration["Supabase:JwtSecret"];
+			var signingKeyBytes = Encoding.UTF8.GetBytes(supabaseJwtSecret ?? string.Empty);
+
+			builder.Services
+				.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(options =>
+				{
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						ValidateIssuerSigningKey = true,
+						IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),
+						ValidateIssuer = true,
+						ValidIssuer = $"{(supabaseUrl ?? string.Empty).TrimEnd('/')}/auth/v1",
+						ValidateAudience = true,
+						ValidAudience = "authenticated",
+						ValidateLifetime = true,
+						ClockSkew = TimeSpan.Zero
+					};
+				});
+			builder.Services.AddAuthorization();
 
 			// DI
 			builder.Services.Configure<OpenAiSettings>(builder.Configuration.GetSection("OpenAI"));
@@ -88,6 +114,9 @@ namespace MemoWords.Api
 
 			// CORS middleware
 			app.UseCors(corsPolicyName);
+
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseRateLimiter();
 

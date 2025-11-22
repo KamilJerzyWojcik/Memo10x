@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppToast } from '@/hooks/useAppToast'
 import { registerFormSchema, type RegisterFormValues } from '@/validation/forms'
+import { supabase } from '@/services/supabase'
 
 export interface RegisterPageProps {
   returnUrl?: string
@@ -25,10 +26,22 @@ export default function RegisterPage({ returnUrl = '/cards' }: RegisterPageProps
     defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 
-  const onSubmit = async (_values: RegisterFormValues) => {
-    // Placeholder: UI-only, bez realnego wywołania Supabase
-    showToast('success', 'Konto utworzone (UI demo)')
-    navigate(`/login?returnUrl=${encodeURIComponent(returnUrl)}`)
+  const onSubmit = async (values: RegisterFormValues) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+      })
+      if (error) {
+        showToast('error', error.message || 'Rejestracja nie powiodła się.')
+        return
+      }
+      showToast('success', 'Konto utworzone. Zaloguj się.')
+      navigate(`/login?returnUrl=${encodeURIComponent(returnUrl)}`)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Wystąpił błąd rejestracji.'
+      showToast('error', message)
+    }
   }
 
   return (
