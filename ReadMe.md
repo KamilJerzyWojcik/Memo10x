@@ -7,6 +7,10 @@
 - supabase status
 RLS ustawiamy w supabase osobno na tabelach
 
+- chmura polaczenie: connection string z session pooler dla .Net 
+Session pooler
+Only recommended as an alternative to Direct Connection, when connecting via an IPv4 network.
+
 # React
 
 dev: npm run dev

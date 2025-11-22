@@ -34,8 +34,7 @@ namespace MemoWords.Api
 			});
 
 			// DbContext i PostgreSQL
-			var connectionString = builder.Configuration.GetConnectionString("Default")
-				?? "Host=localhost;Port=5432;Database=memowords;Username=postgres;Password=postgres";
+			var connectionString = builder.Configuration.GetConnectionString("Default");
 
 			builder.Services.AddDbContext<ApplicationDbContext>(options =>
 			{
