@@ -1,4 +1,4 @@
-import { useNavigate, Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PageShell } from '@/components/layout/PageShell'
@@ -6,13 +6,13 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppToast } from '@/hooks/useAppToast'
-import { loginFormSchema, type LoginFormValues } from '@/validation/forms'
+import { registerFormSchema, type RegisterFormValues } from '@/validation/forms'
 
-export interface LoginPageProps {
+export interface RegisterPageProps {
   returnUrl?: string
 }
 
-export default function LoginPage({ returnUrl = '/' }: LoginPageProps) {
+export default function RegisterPage({ returnUrl = '/cards' }: RegisterPageProps) {
   const navigate = useNavigate()
   const { showToast } = useAppToast()
 
@@ -20,31 +20,26 @@ export default function LoginPage({ returnUrl = '/' }: LoginPageProps) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema) as any,
-    defaultValues: { email: '', password: '' },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerFormSchema as any) as any,
+    defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 
-  const onSubmit = async (_values: LoginFormValues) => {
-    // Placeholder: brak połączenia z backendem/Supabase na tym etapie
-    showToast('success', 'Udane logowanie (UI demo)')
-    // Przekierowanie na returnUrl (na razie bez realnej sesji)
-    navigate(returnUrl, { replace: true })
+  const onSubmit = async (_values: RegisterFormValues) => {
+    // Placeholder: UI-only, bez realnego wywołania Supabase
+    showToast('success', 'Konto utworzone (UI demo)')
+    navigate(`/login?returnUrl=${encodeURIComponent(returnUrl)}`)
   }
 
   return (
     <PageShell>
       <PageHeader
-        title="Zaloguj się"
-        description="Wejdź na pokład MemoWords i kontynuuj naukę słówek."
-        eyebrow="Start wyprawy"
-        emoji="🧳"
+        title="Załóż konto"
+        description="Rozpocznij swoją podróż z fiszkami. Rejestracja w minutę."
+        eyebrow="Nowa wyprawa"
+        emoji="✨"
         secondaryContent={
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-5"
-            noValidate
-          >
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-semibold text-foreground">
                 E-mail
@@ -59,22 +54,30 @@ export default function LoginPage({ returnUrl = '/' }: LoginPageProps) {
               <label htmlFor="password" className="text-sm font-semibold text-foreground">
                 Hasło
               </label>
-              <Input id="password" type="password" autoComplete="current-password" aria-invalid={!!errors.password} {...register('password')} />
+              <Input id="password" type="password" autoComplete="new-password" aria-invalid={!!errors.password} {...register('password')} />
               {errors.password ? (
                 <div role="alert" className="text-sm text-destructive">{errors.password.message}</div>
+              ) : (
+                <p className="text-xs text-muted-foreground">Min. 8 znaków, w tym co najmniej jedna cyfra.</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="text-sm font-semibold text-foreground">
+                Powtórz hasło
+              </label>
+              <Input id="confirmPassword" type="password" autoComplete="new-password" aria-invalid={!!errors.confirmPassword} {...register('confirmPassword')} />
+              {errors.confirmPassword ? (
+                <div role="alert" className="text-sm text-destructive">{errors.confirmPassword.message}</div>
               ) : null}
             </div>
 
             <div className="flex flex-col gap-3 pt-1">
               <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
-                Zaloguj się
+                Zarejestruj się
               </Button>
-              <div className="text-center text-xs text-muted-foreground">
-                Po zalogowaniu wrócisz do:{' '}
-                <code className="rounded bg-black/30 px-2 py-1 font-mono text-primary">{returnUrl}</code>
-              </div>
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                <Link to="/register" className="text-primary hover:underline">Nie masz konta? Zarejestruj się</Link>
+                <Link to="/login" className="text-primary hover:underline">Masz już konto? Zaloguj się</Link>
                 <Link to="/forgot-password" className="text-primary hover:underline">Nie pamiętasz hasła?</Link>
               </div>
             </div>
@@ -84,5 +87,4 @@ export default function LoginPage({ returnUrl = '/' }: LoginPageProps) {
     </PageShell>
   )
 }
-
 

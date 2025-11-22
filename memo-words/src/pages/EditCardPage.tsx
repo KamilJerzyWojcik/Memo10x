@@ -10,6 +10,8 @@ import { translate } from '@/services/aiApi'
 import { FormPageLayout } from '@/components/layout/FormPageLayout'
 import { useAppToast } from '@/hooks/useAppToast'
 import { formatDateTime } from '@/utils/format'
+import { cardTextField } from '@/validation/fields'
+import { MAX_CARD_TEXT_LEN } from '@/validation/constants'
 
 type GenerateState = 'idle' | 'loading' | 'error';
 
@@ -17,9 +19,6 @@ type FormErrors = {
   sourceText?: string;
   targetText?: string;
 };
-
-const MIN_LEN = 1;
-const MAX_LEN = 500;
 
 export default function EditCardPage() {
   const { id } = useParams<{ id: string }>()
@@ -56,10 +55,9 @@ export default function EditCardPage() {
   }, [trimmedSource, trimmedTarget]);
 
   const validateField = useCallback((value: string): string | undefined => {
-    const length = value.trim().length;
-    if (length < MIN_LEN) return 'Wymagane (min 1 znak).';
-    if (length > MAX_LEN) return `Za długie (max ${MAX_LEN} znaków).`;
-    return undefined;
+    const result = cardTextField(MAX_CARD_TEXT_LEN).safeParse(value);
+    if (result.success) return undefined;
+    return result.error.issues[0]?.message ?? 'Nieprawidłowa wartość.';
   }, []);
 
   const validateAll = useCallback(() => {
@@ -264,7 +262,7 @@ export default function EditCardPage() {
     },
     {
       label: 'Długość tłumaczenia',
-      value: `${targetCount}/${MAX_LEN}`,
+      value: `${targetCount}/${MAX_CARD_TEXT_LEN}`,
       description: 'Kontroluj długość treści przed zapisem.',
     },
   ];
@@ -318,7 +316,7 @@ export default function EditCardPage() {
             targetRef={targetRef}
             sourceCount={sourceCount}
             targetCount={targetCount}
-            maxLen={MAX_LEN}
+            maxLen={MAX_CARD_TEXT_LEN}
             GenerateButton={AiGenerateButton}
           />
         )}
