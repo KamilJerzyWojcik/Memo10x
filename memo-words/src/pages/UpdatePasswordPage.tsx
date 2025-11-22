@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppToast } from '@/hooks/useAppToast'
 import { updatePasswordFormSchema, type UpdatePasswordFormValues } from '@/validation/forms'
+import { supabase } from '@/services/supabase'
 
 export interface UpdatePasswordPageProps {
   returnUrl?: string
@@ -25,10 +26,19 @@ export default function UpdatePasswordPage({ returnUrl = '/cards' }: UpdatePassw
     defaultValues: { password: '', confirmPassword: '' },
   })
 
-  const onSubmit = async () => {
-    // Placeholder: UI-only, brak realnego update w Supabase
-    showToast('success', 'Hasło zaktualizowane (UI demo)')
-    navigate(`/login?returnUrl=${encodeURIComponent(returnUrl)}`, { replace: true })
+  const onSubmit = async (values: UpdatePasswordFormValues) => {
+    try {
+      const { error } = await supabase.auth.updateUser({ password: values.password })
+      if (error) {
+        showToast('error', error.message || 'Nie udało się zaktualizować hasła.')
+        return
+      }
+      showToast('success', 'Hasło zostało zaktualizowane')
+      navigate(`/login?returnUrl=${encodeURIComponent(returnUrl)}`, { replace: true })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji hasła.'
+      showToast('error', message)
+    }
   }
 
   return (

@@ -1,11 +1,13 @@
 using MemoWords.Api.Application.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemoWords.Api.Controllers
 {
 	[ApiController]
 	[Route("health")]
+	[AllowAnonymous]
 	public sealed class SystemController : ControllerBase
 	{
 		[HttpGet]

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppToast } from '@/hooks/useAppToast'
 import { forgotPasswordFormSchema, type ForgotPasswordFormValues } from '@/validation/forms'
+import { supabase } from '@/services/supabase'
 
 export default function ForgotPasswordPage() {
   const { showToast } = useAppToast()
@@ -20,9 +21,19 @@ export default function ForgotPasswordPage() {
     defaultValues: { email: '' },
   })
 
-  const onSubmit = async (_values: ForgotPasswordFormValues) => {
-    // Placeholder: UI-only, bez realnego wywołania Supabase
-    showToast('success', 'Jeśli podany e-mail istnieje, wysłaliśmy instrukcje resetu.')
+  const onSubmit = async (values: ForgotPasswordFormValues) => {
+    try {
+      const redirectTo = `${window.location.origin}/update-password`
+      const { error } = await supabase.auth.resetPasswordForEmail(values.email, { redirectTo })
+      if (error) {
+        showToast('error', error.message || 'Nie udało się wysłać linku resetującego.')
+        return
+      }
+      showToast('success', 'Jeśli podany e-mail istnieje, wysłaliśmy instrukcje resetu.')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Wystąpił błąd podczas resetu hasła.'
+      showToast('error', message)
+    }
   }
 
   return (

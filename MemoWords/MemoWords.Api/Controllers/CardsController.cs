@@ -4,11 +4,13 @@ using MemoWords.Api.Application.Services;
 using MemoWords.Api.Infrastructure.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemoWords.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/cards")]
+	[Authorize]
     public sealed class CardsController : ControllerBase
     {
         private readonly IUserContext _userContext;

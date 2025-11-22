@@ -77,7 +77,8 @@ namespace MemoWords.Api
             builder.Services.AddScoped<IOpenAiService, OpenAiService>();
 			// builder.Services.AddScoped<IAiTranslationService, MockAiTranslationService>(); 
             builder.Services.AddScoped<IAiTranslationService, AiTranslationService>();
-			builder.Services.AddSingleton<IUserContext, MockUserContext>();
+			builder.Services.AddHttpContextAccessor();
+			builder.Services.AddScoped<IUserContext, SupabaseUserContext>();
 
 			// Rate Limiting (polityka 'translate')
 			builder.Services.AddRateLimiter(options =>

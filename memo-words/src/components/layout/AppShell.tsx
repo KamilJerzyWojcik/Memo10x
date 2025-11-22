@@ -1,21 +1,27 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/context/AuthContext'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 interface AppShellProps {
   title?: string
-  user?: { initials: string; email: string }
-  onLogin?: () => void
-  onLogout?: () => void
   children: ReactNode
 }
 
-export function AppShell({ title = 'MemoWords', user, onLogin, onLogout, children }: AppShellProps) {
+export function AppShell({ title = 'MemoWords', children }: AppShellProps) {
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const fullPath = `${location.pathname}${location.search || ''}${location.hash || ''}`
+  const initials = user?.email ? (user.email.split('@')[0] || '').slice(0, 2).toUpperCase() : 'MW'
+
   const handleLogin = () => {
-    onLogin?.()
+    navigate('/login', { state: { returnUrl: fullPath } })
   }
-  const handleLogout = () => {
-    onLogout?.()
+  const handleLogout = async () => {
+    await signOut()
+    navigate('/login', { replace: true, state: { returnUrl: fullPath } })
   }
 
   return (
@@ -39,14 +45,14 @@ export function AppShell({ title = 'MemoWords', user, onLogin, onLogout, childre
               </div>
             </div>
             <div className="flex items-center gap-3">
-              {user ? (
+            {user ? (
                 <>
                   <div className="hidden text-right text-sm sm:block">
-                    <div className="font-medium text-foreground">{user.email}</div>
+                  <div className="font-medium text-foreground">{user.email}</div>
                     <div className="text-muted-foreground">Twoja kolekcja</div>
                   </div>
                   <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-sm font-semibold text-foreground shadow-[var(--shadow-sm)]">
-                    {user.initials}
+                  {initials}
                   </div>
                   <Button variant="ghost" size="sm" onClick={handleLogout}>
                     Wyloguj

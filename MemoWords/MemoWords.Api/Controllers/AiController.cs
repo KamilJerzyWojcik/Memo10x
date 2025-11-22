@@ -5,11 +5,13 @@ using MemoWords.Api.Application.Services.Exceptions;
 using MemoWords.Api.Infrastructure.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemoWords.Api.Controllers
 {
 	[ApiController]
 	[Route("api/v1/ai")]
+	[Authorize]
 	public sealed class AiController : ControllerBase
 	{
 		private readonly IUserContext _userContext;

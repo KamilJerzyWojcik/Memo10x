@@ -1,4 +1,5 @@
- import { getAuthToken } from '../utils/auth';
+import { getAuthToken } from '../utils/auth';
+import { supabase } from './supabase';
  
  type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
  
@@ -29,7 +30,7 @@
    window.location.assign(target);
  }
  
- async function apiRequest<TResponse>(path: string, method: HttpMethod, options?: ApiRequestOptions): Promise<TResponse> {
+async function apiRequest<TResponse>(path: string, method: HttpMethod, options?: ApiRequestOptions): Promise<TResponse> {
    const url = buildUrl(path);
    const headers = new Headers(options?.headers ?? {});
  
@@ -37,10 +38,12 @@
      headers.set('Content-Type', 'application/json');
    }
  
-   const token = getAuthToken();
-   if (token && !headers.has('Authorization')) {
-     headers.set('Authorization', `Bearer ${token}`);
-   }
+  // Pobierz świeży token z Supabase; fallback do localStorage
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token ?? getAuthToken();
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
  
    const response = await fetch(url, {
      ...options,

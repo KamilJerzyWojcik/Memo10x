@@ -1,4 +1,5 @@
-import { createBrowserRouter, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
+/* eslint react-refresh/only-export-components: "off" */
+import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router-dom'
 import CardsPage from './pages/CardsPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -8,16 +9,9 @@ import AddCardPage from './pages/AddCardPage'
 import EditCardPage from './pages/EditCardPage'
 import { AppShell } from '@/components/layout/AppShell'
 
-function AppFrame() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const fullPath = `${location.pathname}${location.search || ''}${location.hash || ''}`
+function AppLayout() {
   return (
-    <AppShell
-      onLogin={() => {
-        navigate('/login', { state: { returnUrl: fullPath } })
-      }}
-    >
+    <AppShell>
       <Outlet />
     </AppShell>
   )
@@ -50,7 +44,7 @@ export const router = createBrowserRouter([
     element: <Navigate to="/cards" replace />,
   },
   {
-    element: <AppFrame />,
+    element: <AppLayout />,
     children: [
       {
         path: '/cards',

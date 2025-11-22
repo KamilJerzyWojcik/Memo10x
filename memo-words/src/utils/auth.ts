@@ -1,5 +1,6 @@
 export function getAuthToken(): string | null {
-  // Try common keys first; adjust to your auth implementation.
+  // Fallback dla tokena jeśli Supabase.getSession() jest niedostępne.
+  // Preferowane źródło: supabase.auth.getSession().
   const candidates = [
     'sb-access-token', // custom/local
     'access_token', // generic
