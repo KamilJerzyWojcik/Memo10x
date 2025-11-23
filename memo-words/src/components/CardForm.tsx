@@ -57,6 +57,7 @@ export default function CardForm(props: CardFormProps) {
         onSubmit()
       }}
       className="space-y-6"
+      data-testid="cardform"
     >
       <div className="space-y-2">
         <label htmlFor="sourceText" className="text-sm font-semibold text-foreground">
@@ -64,21 +65,22 @@ export default function CardForm(props: CardFormProps) {
         </label>
         <Textarea
           id="sourceText"
+          data-testid="cardform-source"
           ref={sourceRef}
           value={sourceText}
           onChange={(e) => onSourceChange(e.target.value)}
           aria-invalid={!!errors.sourceText}
         />
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          {errors.sourceText ? <div role="alert" className="text-destructive">{errors.sourceText}</div> : <span />}
-          <div>
+          {errors.sourceText ? <div role="alert" data-testid="cardform-source-error" className="text-destructive">{errors.sourceText}</div> : <span />}
+          <div data-testid="cardform-source-count">
             {(sourceCount ?? sourceText.trim().length)}/{maxLen}
           </div>
         </div>
       </div>
 
       <div className="space-y-2">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3" data-testid="cardform-generate-area">
           <label htmlFor="targetText" className="text-sm font-semibold text-foreground">
             Tłumaczenie (PL)
           </label>
@@ -88,6 +90,7 @@ export default function CardForm(props: CardFormProps) {
         </div>
         <Textarea
           id="targetText"
+          data-testid="cardform-target"
           ref={targetRef}
           value={targetText}
           readOnly={disableTargetWhileGenerating && generating}
@@ -95,18 +98,18 @@ export default function CardForm(props: CardFormProps) {
           aria-invalid={!!errors.targetText}
         />
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          {errors.targetText ? <div role="alert" className="text-destructive">{errors.targetText}</div> : <span />}
-          <div>
+          {errors.targetText ? <div role="alert" data-testid="cardform-target-error" className="text-destructive">{errors.targetText}</div> : <span />}
+          <div data-testid="cardform-target-count">
             {(targetCount ?? targetText.trim().length)}/{maxLen}
           </div>
         </div>
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Button type="submit" disabled={submitDisabled}>
+        <Button type="submit" data-testid="cardform-submit" disabled={submitDisabled}>
           {submitLabel}
         </Button>
-        <Button type="button" variant="ghost" onClick={onCancel} disabled={submitting}>
+        <Button type="button" data-testid="cardform-cancel" variant="ghost" onClick={onCancel} disabled={submitting}>
           Anuluj
         </Button>
       </div>

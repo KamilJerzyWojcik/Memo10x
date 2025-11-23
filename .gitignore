@@ -73,3 +73,4 @@ MemoWords/MemoWords.Api/appsettings.Development.json
 supabase_keys.md
 openaiKeys.md
 memo-words/.env.prod
+memo-words/test-results/.last-run.json
