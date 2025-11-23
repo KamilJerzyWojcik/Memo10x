@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+---
+## TESTING
+
+### Guidelines for Unit Tests
+
+#### XUNIT / .NET
+
+* Follow AAA (Arrange–Act–Assert) for clear test structure
+* Keep tests isolated — avoid shared state and static dependencies
+* Use test doubles (mocks, stubs, fakes) with libraries like Moq or NSubstitute
+* Test only one logical unit per test method
+* Use Theory + InlineData / MemberData for data-driven tests
+* Prefer constructor injection for sharing setup across tests
+* Use IClassFixture and ICollectionFixture for controlled, shared test context
+* Name test methods clearly using pattern: *MethodName_State_ExpectedResult*
+* Assert using FluentAssertions or xUnit’s built-in assertions
+* Avoid asserting multiple independent things in one test
+* Mock external services and IO — do not call DB, API, or filesystem
+* Test exception flows with Assert.Throws / Assert.ThrowsAsync
+* Use helper builders / Mother Objects to simplify Arrange phase
+* Keep test project separate from production code and mirror folder structure
+* Ensure deterministic tests — no DateTime.Now, randomness, or timing dependencies
+* Run tests in parallel only when safe; disable parallelization when needed
+* Use code coverage tools (coverlet, ReportGenerator) to identify gaps
+* Automate test execution via CI and run on every pull request
+* Keep tests fast — under a few milliseconds; move slow tests to integration suite
+* Use minimal mocking: mock behavior, not implementation details
+* Prefer immutability in tested classes to simplify test setup
