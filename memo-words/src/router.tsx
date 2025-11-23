@@ -8,6 +8,7 @@ import UpdatePasswordPage from './pages/UpdatePasswordPage'
 import AddCardPage from './pages/AddCardPage'
 import EditCardPage from './pages/EditCardPage'
 import { AppShell } from '@/components/layout/AppShell'
+import { RequireAuth } from '@/components/layout/RequireAuth'
 
 function AppLayout() {
   return (
@@ -19,8 +20,12 @@ function AppLayout() {
 
 function LoginRoute() {
   const location = useLocation()
-  const state = location.state as { returnUrl?: string } | null
-  const returnUrl = state?.returnUrl ?? '/'
+  const state = location.state as { from?: Location; returnUrl?: string } | null
+  const from = state?.from
+  const stored = sessionStorage.getItem('returnUrl') || undefined
+  if (stored) sessionStorage.removeItem('returnUrl')
+  const fromPath = from ? `${from.pathname}${from.search || ''}${from.hash || ''}` : undefined
+  const returnUrl = fromPath ?? state?.returnUrl ?? stored ?? '/'
   return <LoginPage returnUrl={returnUrl} />
 }
 
@@ -44,7 +49,11 @@ export const router = createBrowserRouter([
     element: <Navigate to="/cards" replace />,
   },
   {
-    element: <AppLayout />,
+    element: (
+      <RequireAuth>
+        <AppLayout />
+      </RequireAuth>
+    ),
     children: [
       {
         path: '/cards',

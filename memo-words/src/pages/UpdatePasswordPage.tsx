@@ -34,7 +34,7 @@ export default function UpdatePasswordPage({ returnUrl = '/cards' }: UpdatePassw
         return
       }
       showToast('success', 'Hasło zostało zaktualizowane')
-      navigate(`/login?returnUrl=${encodeURIComponent(returnUrl)}`, { replace: true })
+      navigate('/login', { replace: true, state: { from: { pathname: returnUrl } } })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji hasła.'
       showToast('error', message)

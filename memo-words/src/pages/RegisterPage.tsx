@@ -37,7 +37,7 @@ export default function RegisterPage({ returnUrl = '/cards' }: RegisterPageProps
         return
       }
       showToast('success', 'Konto utworzone. Zaloguj się.')
-      navigate(`/login?returnUrl=${encodeURIComponent(returnUrl)}`)
+      navigate('/login', { state: { from: { pathname: returnUrl } } })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Wystąpił błąd rejestracji.'
       showToast('error', message)

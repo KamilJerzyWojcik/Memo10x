@@ -13,15 +13,14 @@ export function AppShell({ title = 'MemoWords', children }: AppShellProps) {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const fullPath = `${location.pathname}${location.search || ''}${location.hash || ''}`
   const initials = user?.email ? (user.email.split('@')[0] || '').slice(0, 2).toUpperCase() : 'MW'
 
   const handleLogin = () => {
-    navigate('/login', { state: { returnUrl: fullPath } })
+    navigate('/login', { state: { from: location } })
   }
   const handleLogout = async () => {
     await signOut()
-    navigate('/login', { replace: true, state: { returnUrl: fullPath } })
+    navigate('/login', { replace: true, state: { from: location } })
   }
 
   return (

@@ -25,9 +25,14 @@ import { supabase } from './supabase';
  }
  
  function redirectToLogin() {
-   const returnUrl = `${window.location.pathname}${window.location.search}`;
-   const target = `/login?returnUrl=${encodeURIComponent(returnUrl)}`;
-   window.location.assign(target);
+   const path = `${window.location.pathname}${window.location.search || ''}${window.location.hash || ''}`;
+   if (window.location.pathname === '/login') {
+     return;
+   }
+   try {
+     sessionStorage.setItem('returnUrl', path);
+   } catch {}
+   window.location.replace('/login');
  }
  
 async function apiRequest<TResponse>(path: string, method: HttpMethod, options?: ApiRequestOptions): Promise<TResponse> {

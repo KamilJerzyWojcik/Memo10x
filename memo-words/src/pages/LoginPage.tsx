@@ -81,10 +81,6 @@ export default function LoginPage({ returnUrl = '/' }: LoginPageProps) {
               <Button type="submit" size="lg" disabled={isSubmitting} className="w-full">
                 Zaloguj się
               </Button>
-              <div className="text-center text-xs text-muted-foreground">
-                Po zalogowaniu wrócisz do:{' '}
-                <code className="rounded bg-black/30 px-2 py-1 font-mono text-primary">{returnUrl}</code>
-              </div>
               <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <Link to="/register" className="text-primary hover:underline">Nie masz konta? Zarejestruj się</Link>
                 <Link to="/forgot-password" className="text-primary hover:underline">Nie pamiętasz hasła?</Link>
