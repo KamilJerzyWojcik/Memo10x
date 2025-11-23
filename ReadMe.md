@@ -21,3 +21,7 @@ http://localhost:4173/
 
 # Backend
 dotnet user-secrets set "OpenAI:ApiKey" "sk-proj-..."
+
+
+Testy
+https://playwright.dev/docs/pom
