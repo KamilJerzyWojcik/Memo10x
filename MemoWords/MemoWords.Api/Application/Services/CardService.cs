@@ -2,7 +2,6 @@ using MemoWords.Api.Application.DTOs;
 using MemoWords.Api.Domain.Entities;
 using MemoWords.Api.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 namespace MemoWords.Api.Application.Services
 {

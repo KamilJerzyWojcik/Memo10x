@@ -12,11 +12,12 @@ Backend - Supabase jako rozwiązanie do Auth i baza danych:
 Backend - .Net 9
 - cala logika biznesowa poza sciezka autoryzacji usera
 - code first do tworzenia tabel przez EF w supabase
+- test xUnit
 
 AI - Komunikacja z modelami przez usługę OpenAi:
 - Dostęp do modeli GPT, które pozwolą nam znaleźć rozwiązanie zapewniające efektywność i niskie koszta
 - Pozwala na ustawianie limitów finansowych na klucze API
 
 CI/CD i Hosting:
-- Azure Devops do tworzenia pipeline’ów CI/CD
+- Github actions do tworzenia pipeline’ów CI/CD
 - Azure Web App do hostowania Api i Azure Static Web Apps dla frontendu

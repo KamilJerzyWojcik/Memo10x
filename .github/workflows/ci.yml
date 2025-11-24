@@ -1,0 +1,61 @@
+name: CI - build & tests
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  frontend:
+    name: Frontend (React/Vite) - test & build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: memo-words
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: memo-words/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests (Vitest)
+        run: npm test
+
+      - name: Build production bundle
+        run: npm run build
+
+  backend:
+    name: Backend (.NET 9) - test & build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: MemoWords
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore .NET dependencies
+        run: dotnet restore
+
+      - name: Build solution (Release)
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests (xUnit)
+        run: dotnet test --configuration Release --no-build
