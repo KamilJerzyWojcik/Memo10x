@@ -1,4 +1,5 @@
 import type { JSX, RefObject } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 
@@ -50,6 +51,33 @@ export default function CardForm(props: CardFormProps) {
   const submitDisabled = submitting || !!errors.sourceText || !!errors.targetText || !canSubmit
   const generateDisabled = generating || !sourceText.trim()
 
+  const sourceErrorId = useId()
+  const targetErrorId = useId()
+  const sourceCountId = useId()
+  const targetCountId = useId()
+
+  const hasAutoFocusedRef = useRef(false)
+
+  useEffect(() => {
+    if (submitting) return
+    if (hasAutoFocusedRef.current) return
+    if (errors.sourceText && sourceRef?.current) {
+      sourceRef.current.focus()
+      hasAutoFocusedRef.current = true
+      return
+    }
+    if (errors.targetText && targetRef?.current) {
+      targetRef.current.focus()
+      hasAutoFocusedRef.current = true
+    }
+  }, [errors, submitting, sourceRef, targetRef])
+
+  useEffect(() => {
+    if (!errors.sourceText && !errors.targetText) {
+      hasAutoFocusedRef.current = false
+    }
+  }, [errors])
+
   return (
     <form
       onSubmit={(e) => {
@@ -70,10 +98,12 @@ export default function CardForm(props: CardFormProps) {
           value={sourceText}
           onChange={(e) => onSourceChange(e.target.value)}
           aria-invalid={!!errors.sourceText}
+          aria-describedby={`${errors.sourceText ? sourceErrorId : ''} ${sourceCountId}`.trim()}
+          maxLength={maxLen}
         />
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          {errors.sourceText ? <div role="alert" data-testid="cardform-source-error" className="text-destructive">{errors.sourceText}</div> : <span />}
-          <div data-testid="cardform-source-count">
+          {errors.sourceText ? <div id={sourceErrorId} role="alert" data-testid="cardform-source-error" className="text-destructive">{errors.sourceText}</div> : <span />}
+          <div id={sourceCountId} data-testid="cardform-source-count">
             {(sourceCount ?? sourceText.trim().length)}/{maxLen}
           </div>
         </div>
@@ -96,10 +126,12 @@ export default function CardForm(props: CardFormProps) {
           readOnly={disableTargetWhileGenerating && generating}
           onChange={(e) => onTargetChange(e.target.value)}
           aria-invalid={!!errors.targetText}
+          aria-describedby={`${errors.targetText ? targetErrorId : ''} ${targetCountId}`.trim()}
+          maxLength={maxLen}
         />
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          {errors.targetText ? <div role="alert" data-testid="cardform-target-error" className="text-destructive">{errors.targetText}</div> : <span />}
-          <div data-testid="cardform-target-count">
+          {errors.targetText ? <div id={targetErrorId} role="alert" data-testid="cardform-target-error" className="text-destructive">{errors.targetText}</div> : <span />}
+          <div id={targetCountId} data-testid="cardform-target-count">
             {(targetCount ?? targetText.trim().length)}/{maxLen}
           </div>
         </div>

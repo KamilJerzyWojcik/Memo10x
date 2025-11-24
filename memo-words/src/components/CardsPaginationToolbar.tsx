@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import type { PageSize } from '@/types/cards'
+import { usePagination } from '@/hooks/usePagination'
 
 export interface CardsPaginationToolbarProps {
   page: number
@@ -22,21 +22,7 @@ export default function CardsPaginationToolbar({
   onPageChange,
   onPageSizeChange,
 }: CardsPaginationToolbarProps) {
-  const lastPage = Math.max(1, Math.ceil(total / Math.max(1, pageSize)))
-
-  const pages = useMemo(() => {
-    const around = 2
-    const result: number[] = []
-    const start = Math.max(1, page - around)
-    const end = Math.min(lastPage, page + around)
-    for (let p = start; p <= end; p++) result.push(p)
-    if (!result.includes(1)) result.unshift(1)
-    if (!result.includes(lastPage)) result.push(lastPage)
-    return Array.from(new Set(result)).sort((a, b) => a - b)
-  }, [page, lastPage])
-
-  const canPrev = page > 1
-  const canNext = page < lastPage
+  const { lastPage, pages, canPrev, canNext } = usePagination({ page, pageSize, total, around: 2 })
 
   return (
     <div className="flex w-full flex-col items-center justify-between gap-6 rounded-[40px] border border-white/10 bg-[#0c0715]/80 px-6 py-4 text-sm text-muted-foreground shadow-[var(--shadow-md)] lg:flex-row">

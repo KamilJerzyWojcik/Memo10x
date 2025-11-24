@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useRef, useLayoutEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import type { CardDto, PageSize, PagedResultDto } from '@/types/cards'
 import { getCards, deleteCard } from '@/services/cardsApi'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -123,9 +123,6 @@ export default function CardsPage() {
     }
   }, [loading, items])
 
-  const onEdit = useCallback((id: string) => {
-    navigate(`/cards/${encodeURIComponent(id)}/edit`);
-  }, [navigate]);
 
   const onRequestDelete = useCallback((id: string) => {
     setConfirmingId(id);
@@ -207,8 +204,8 @@ export default function CardsPage() {
         eyebrow="Twoja trasa nauki"
         emoji="🧭"
         primaryAction={
-          <Button size="lg" onClick={() => navigate('/cards/add')}>
-            Dodaj kartę
+          <Button size="lg" asChild>
+            <Link to="/cards/add">Dodaj kartę</Link>
           </Button>
         }
         toolbar={
@@ -245,7 +242,6 @@ export default function CardsPage() {
                 confirming={confirmingId === card.id}
                 busy={deletingIds.has(card.id)}
                 autoFocusConfirm={confirmingId === card.id}
-                onEdit={onEdit}
                 onRequestDelete={onRequestDelete}
                 onCancelDelete={onCancelDelete}
                 onConfirmDelete={onConfirmDelete}

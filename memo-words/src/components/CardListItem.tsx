@@ -4,6 +4,18 @@ import { formatDateTime } from '@/utils/format'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 export interface CardListItemProps {
   card: CardDto
@@ -11,7 +23,6 @@ export interface CardListItemProps {
   confirming: boolean
   busy?: boolean
   autoFocusConfirm?: boolean
-  onEdit: (id: string) => void
   onRequestDelete: (id: string) => void
   onCancelDelete: (id: string) => void
   onConfirmDelete: (id: string) => void
@@ -23,7 +34,6 @@ export default function CardListItem({
   confirming,
   busy,
   autoFocusConfirm,
-  onEdit,
   onRequestDelete,
   onCancelDelete,
   onConfirmDelete,
@@ -83,62 +93,63 @@ export default function CardListItem({
             )}
           </div>
           
-          {!confirming ? (
-            <div className="flex items-center gap-2 opacity-80 transition-opacity group-hover:opacity-100">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => onEdit(card.id)} 
-                disabled={busy} 
-                aria-label="Edytuj kartę"
-                className="h-8 hover:bg-primary/10 hover:text-primary"
-              >
-                Edytuj
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => onRequestDelete(card.id)} 
-                disabled={busy} 
-                aria-label="Usuń kartę"
-                className="h-8 hover:bg-destructive/10 hover:text-destructive"
-              >
-                Usuń
-              </Button>
-            </div>
-          ) : (
-            <div
-              role="alertdialog"
-              aria-label="Potwierdzenie usunięcia"
-              aria-describedby={dialogDescId}
-              className="flex flex-wrap items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs animate-in fade-in slide-in-from-right-2"
+          <div className="flex items-center gap-2 opacity-80 transition-opacity group-hover:opacity-100">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              disabled={busy} 
+              aria-label="Edytuj kartę"
+              className="h-8 hover:bg-primary/10 hover:text-primary"
+              asChild
             >
-              <span id={dialogDescId} className="font-medium text-destructive-foreground">Na pewno?</span>
-              <div className="flex gap-1">
+              <Link to={`/cards/${encodeURIComponent(card.id)}/edit`}>
+                Edytuj
+              </Link>
+            </Button>
+
+            <AlertDialog
+              open={!!confirming}
+              onOpenChange={(open: boolean) => {
+                if (open) onRequestDelete(card.id)
+                else onCancelDelete(card.id)
+              }}
+            >
+              <AlertDialogTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onCancelDelete(card.id)}
                   disabled={busy}
-                  aria-label="Anuluj usunięcie"
-                  autoFocus={autoFocusConfirm === true}
-                  className="h-6 px-2 text-[10px] hover:bg-white/10"
+                  aria-label="Usuń kartę"
+                  className="h-8 hover:bg-destructive/10 hover:text-destructive"
                 >
-                  Nie
+                  Usuń
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => onConfirmDelete(card.id)}
-                  disabled={busy}
-                  aria-label="Potwierdź usunięcie"
-                  className="h-6 px-2 text-[10px]"
-                >
-                  Tak
-                </Button>
-              </div>
-            </div>
-          )}
+              </AlertDialogTrigger>
+              <AlertDialogContent className="p-4 sm:p-6">
+                <AlertDialogHeader className="gap-2">
+                  <AlertDialogTitle>Na pewno usunąć tę kartę?</AlertDialogTitle>
+                  <AlertDialogDescription id={dialogDescId}>
+                    Tej operacji nie można cofnąć.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel
+                    onClick={() => onCancelDelete(card.id)}
+                    disabled={busy}
+                    autoFocus={autoFocusConfirm === true}
+                  >
+                    Nie
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => onConfirmDelete(card.id)}
+                    disabled={busy}
+                  >
+                    Tak
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </div>
     </li>

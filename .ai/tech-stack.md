@@ -2,6 +2,7 @@ Frontend - React:
 - React 19
 - TypeScript 5 dla statycznego typowania kodu i lepszego wsparcia IDE
 - scss pozwala na stylowanie aplikacji
+- zastoswany tailwind i Shadcn UI
 
 Backend - Supabase jako rozwiązanie do Auth i baza danych:
 - Zapewnia bazę danych PostgreSQL

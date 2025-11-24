@@ -132,10 +132,10 @@ export default function AddCardPage() {
           showToast('warning', 'Nieprawidłowe dane. Sprawdź pola.', {
             label: 'Pokaż',
             onClick: () => {
-              validateAll();
-              if (errors.sourceText) {
+              const updated = validateAll();
+              if (updated.sourceText) {
                 sourceRef.current?.focus();
-              } else if (errors.targetText) {
+              } else if (updated.targetText) {
                 targetRef.current?.focus();
               }
             },
