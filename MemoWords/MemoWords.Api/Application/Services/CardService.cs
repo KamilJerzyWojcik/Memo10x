@@ -51,7 +51,7 @@ namespace MemoWords.Api.Application.Services
                 .AsNoTracking()
                 .Where(c => c.UserId == userId);
 
-            var total = await query.CountAsync(cancellationToken);
+            var total = await query.CountAsync();
 
             var items = await query
                 .OrderByDescending(c => c.CreatedAt)
@@ -59,7 +59,7 @@ namespace MemoWords.Api.Application.Services
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(c => c.CreateCardDto())
-                .ToListAsync(cancellationToken);
+                .ToListAsync();
 
             var hasNextPage = page * pageSize < total;
 

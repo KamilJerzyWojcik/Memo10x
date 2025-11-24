@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useRef, useLayoutEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import type { CardDto, PageSize, PagedResultDto } from '@/types/cards'
 import { getCards, deleteCard } from '@/services/cardsApi'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -116,6 +116,10 @@ export default function CardsPage() {
     setPageSize(next);
   }, []);
 
+  const handleAddCardClick = useCallback(() => {
+    navigate('/cards/add')
+  }, [navigate])
+
   useLayoutEffect(() => {
     if (prevScrollY.current !== null && !loading) {
       window.scrollTo({ top: prevScrollY.current, behavior: 'instant' })
@@ -204,8 +208,8 @@ export default function CardsPage() {
         eyebrow="Twoja trasa nauki"
         emoji="🧭"
         primaryAction={
-          <Button size="lg" asChild>
-            <Link to="/cards/add">Dodaj kartę</Link>
+          <Button size="lg" onClick={handleAddCardClick}>
+            Dodaj kartę
           </Button>
         }
         toolbar={
