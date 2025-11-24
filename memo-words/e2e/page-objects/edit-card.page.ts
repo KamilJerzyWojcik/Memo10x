@@ -12,6 +12,7 @@ export class EditCardPagePO extends BasePage {
 
   async goto(id: string): Promise<void> {
     await super.goto(`/cards/${encodeURIComponent(id)}/edit`)
+    await this.form.root.waitFor({ state: 'visible' })
   }
 
   async updateTarget(newText: string): Promise<void> {

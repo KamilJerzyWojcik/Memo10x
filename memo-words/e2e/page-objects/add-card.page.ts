@@ -12,6 +12,7 @@ export class AddCardPagePO extends BasePage {
 
   async goto(): Promise<void> {
     await super.goto('/cards/add')
+    await this.form.root.waitFor({ state: 'visible' })
   }
 
   async createCardViaAI(sourceText: string): Promise<void> {

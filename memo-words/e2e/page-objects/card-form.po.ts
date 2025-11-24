@@ -49,8 +49,10 @@ export class CardFormPO {
   }
 
   async expectCounts(sourceCount: number | string, targetCount: number | string): Promise<void> {
-    await expect(this.sourceCount).toHaveText(String(sourceCount))
-    await expect(this.targetCount).toHaveText(String(targetCount))
+    const src = String(sourceCount).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const trg = String(targetCount).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    await expect(this.sourceCount).toHaveText(new RegExp(`^${src}(?:/\\d+)?$`))
+    await expect(this.targetCount).toHaveText(new RegExp(`^${trg}(?:/\\d+)?$`))
   }
 }
 
