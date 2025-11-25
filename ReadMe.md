@@ -1,5 +1,5 @@
 
-# Supabase
+# Supabase ssad
 
 - npx supabase init
 - npx supabase start
