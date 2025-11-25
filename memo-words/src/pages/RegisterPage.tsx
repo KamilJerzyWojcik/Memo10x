@@ -22,7 +22,7 @@ export default function RegisterPage({ returnUrl = '/cards' }: RegisterPageProps
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema as any) as any,
+    resolver: zodResolver(registerFormSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 

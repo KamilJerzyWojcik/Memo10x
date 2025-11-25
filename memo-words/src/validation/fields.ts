@@ -19,7 +19,7 @@ export const cardTextField = (max = MAX_CARD_TEXT_LEN) =>
 export const withPasswordConfirmation = <
   T extends { password: string; confirmPassword: string }
 >(
-  shape: z.ZodType<T>
+  shape: z.ZodType<T, T>
 ) =>
   shape.refine((v) => v.password === v.confirmPassword, {
     message: 'Hasła muszą być identyczne',

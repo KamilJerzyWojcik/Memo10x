@@ -55,7 +55,7 @@ const reducer = (state: State, action: Action): State => {
         ),
       }
 
-    case 'DISMISS_TOAST':
+    case 'DISMISS_TOAST': {
       const { toastId } = action
 
       if (!toastId) {
@@ -84,6 +84,7 @@ const reducer = (state: State, action: Action): State => {
             : toast,
         ),
       }
+    }
 
     case 'REMOVE_TOAST':
       if (action.toastId === undefined) {

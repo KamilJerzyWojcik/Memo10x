@@ -14,6 +14,9 @@ import { MAX_CARD_TEXT_LEN } from '@/validation/constants'
 
 type GenerateState = 'idle' | 'loading' | 'error';
 
+const isAbortError = (error: unknown): error is DOMException =>
+  error instanceof DOMException && error.name === 'AbortError';
+
 export default function AddCardPage() {
   const navigate = useNavigate()
   const { showToast } = useAppToast()
@@ -75,7 +78,11 @@ export default function AddCardPage() {
     const myId = ++requestIdRef.current;
     // Abort previous if any
     if (acRef.current) {
-      try { acRef.current.abort(); } catch {}
+      try {
+        acRef.current.abort();
+      } catch {
+        // Brak dodatkowej obsługi – oczekiwany scenariusz przy anulowaniu poprzedniej prośby.
+      }
     }
     acRef.current = new AbortController();
     try {
@@ -90,7 +97,7 @@ export default function AddCardPage() {
     } catch (err) {
       if (requestIdRef.current !== myId) return;
       // Swallow abort
-      if (typeof err === 'object' && err !== null && 'name' in err && (err as any).name === 'AbortError') {
+      if (isAbortError(err)) {
         setGenerateState('idle');
         return;
       }
@@ -155,7 +162,7 @@ export default function AddCardPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [errors.sourceText, errors.targetText, navigate, showToast, trimmedSource, trimmedTarget, validateAll]);
+  }, [navigate, showToast, trimmedSource, trimmedTarget, validateAll]);
 
   const goBack = useCallback(() => {
     navigate('/cards');
@@ -170,7 +177,11 @@ export default function AddCardPage() {
     window.scrollTo({ top: 0, behavior: 'auto' })
     return () => {
       if (acRef.current) {
-        try { acRef.current.abort(); } catch {}
+        try {
+          acRef.current.abort();
+        } catch {
+          // Abort w cleanupie jest spodziewany; nie wymagamy dodatkowych działań.
+        }
       }
     };
   }, []);

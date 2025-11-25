@@ -74,3 +74,4 @@ supabase_keys.md
 openaiKeys.md
 memo-words/.env.prod
 memo-words/test-results/.last-run.json
+memo-words/e2e/.auth/storageState.json

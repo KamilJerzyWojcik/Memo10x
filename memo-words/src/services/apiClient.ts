@@ -29,9 +29,11 @@ import { supabase } from './supabase';
    if (window.location.pathname === '/login') {
      return;
    }
-   try {
-     sessionStorage.setItem('returnUrl', path);
-   } catch {}
+  try {
+    sessionStorage.setItem('returnUrl', path);
+  } catch {
+    // Storage może być niedostępny (np. prywatne okno) – ignorujemy brak zapisu.
+  }
    window.location.replace('/login');
  }
  

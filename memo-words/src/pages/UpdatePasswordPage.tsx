@@ -22,7 +22,7 @@ export default function UpdatePasswordPage({ returnUrl = '/cards' }: UpdatePassw
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<UpdatePasswordFormValues>({
-    resolver: zodResolver(updatePasswordFormSchema as any) as any,
+    resolver: zodResolver(updatePasswordFormSchema),
     defaultValues: { password: '', confirmPassword: '' },
   })
 

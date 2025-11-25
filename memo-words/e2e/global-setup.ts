@@ -32,6 +32,10 @@ async function ensureDevServer(baseURL: string, projectRoot: string): Promise<vo
     stdio: 'ignore',
     env: { ...process.env },
   })
+  child.unref()
+  process.on('exit', () => {
+    child.kill()
+  })
   // Poll until server responds
   const maxWaitMs = 120_000
   const start = Date.now()
@@ -113,7 +117,9 @@ async function performUiLoginAndSaveState(baseURL: string, storagePath: string):
           if (parsed?.access_token) return true
           if (parsed?.currentSession?.access_token) return true
           if (parsed?.session?.access_token) return true
-        } catch {}
+        } catch {
+          // Supabase storage czasem zawiera nieparsowalne wpisy – pomijamy je.
+        }
       }
     }
     return false
@@ -183,7 +189,8 @@ async function cleanupUserData(baseApiUrl: string, token: string): Promise<void>
 }
 
 export default async function globalSetup(config: FullConfig): Promise<void> {
-  const baseURL = (config.projects?.[0]?.use as any)?.baseURL || 'http://localhost:5173'
+  const projectBaseUrl = config.projects?.[0]?.use?.baseURL
+  const baseURL = typeof projectBaseUrl === 'string' ? projectBaseUrl : 'http://localhost:5173'
   // Ścieżki
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)

@@ -7,7 +7,6 @@ if (!url || !anonKey) {
   // W trybie dev wyraźnie sygnalizujemy brak konfiguracji środowiska
   // Ustaw VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY w pliku .env
   // lub w zmiennych środowiskowych Vite
-  // eslint-disable-next-line no-console
   console.warn('Supabase env vars are missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')
 }
 

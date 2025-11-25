@@ -43,8 +43,8 @@ export default function CardsPage() {
   useEffect(() => {
     const state = location.state as { highlightId?: string } | null;
     if (!state?.highlightId) return;
-    setHighlightId(state.highlightId);
-    const { highlightId: _, ...rest } = state;
+    const { highlightId: highlightStateId, ...rest } = state;
+    setHighlightId(highlightStateId);
     navigate(location.pathname, {
       replace: true,
       state: Object.keys(rest).length ? rest : null,
