@@ -178,7 +178,3 @@ namespace MemoWords.Tests.Domain
 		#endregion
 	}
 }
-
-
-
-
