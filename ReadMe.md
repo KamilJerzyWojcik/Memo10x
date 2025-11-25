@@ -1,5 +1,5 @@
 
-# Supabase
+# Supabase ssds
 
 - npx supabase init
 - npx supabase start
