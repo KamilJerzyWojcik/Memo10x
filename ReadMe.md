@@ -1,5 +1,5 @@
 
-# Supabase
+# Supabase console
 
 - npx supabase init
 - npx supabase start
