@@ -115,12 +115,20 @@ namespace MemoWords.Api
 			// CORS middleware
 			app.UseCors(corsPolicyName);
 
+			// Statyczne pliki SPA (zbudowany frontend Vite serwowany z wwwroot)
+			app.UseDefaultFiles();
+			app.UseStaticFiles();
+
 			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseRateLimiter();
 
 			app.MapControllers();
+
+			// Fallback dla SPA - nieznane ścieżki kierujemy do index.html
+			app.MapFallbackToFile("/index.html");
+
 			app.Run();
         }
     }

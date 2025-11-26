@@ -20,4 +20,4 @@ AI - Komunikacja z modelami przez usługę OpenAi:
 
 CI/CD i Hosting:
 - Github actions do tworzenia pipeline’ów CI/CD
-- Azure Web App do hostowania Api i Azure Static Web Apps dla frontendu
+- DigitalOcean App Platform jako hosting aplikacji asp.net i react w jednym obrazie (nalezy zbudowac aplikacje react do asp.net)

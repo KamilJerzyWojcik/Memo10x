@@ -75,3 +75,6 @@ openaiKeys.md
 memo-words/.env.prod
 memo-words/test-results/.last-run.json
 memo-words/e2e/.auth/storageState.json
+docker-dev.sh
+docker-build.sh
+configs/
