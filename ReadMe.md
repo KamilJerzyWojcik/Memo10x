@@ -56,3 +56,4 @@ docker-dev-run-example.sh
 
 - API / frontend: `http://localhost:8080`
 - Health-check: `http://localhost:8080/health`  
+  
