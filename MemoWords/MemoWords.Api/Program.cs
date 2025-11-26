@@ -21,13 +21,18 @@ namespace MemoWords.Api
 			var builder = WebApplication.CreateBuilder(args);
 			
 			// CORS
-			const string corsPolicyName = "AllowLocalhost5173";
+			const string corsPolicyName = "AllowFrontendOrigins";
 			builder.Services.AddCors(options =>
 			{
 				options.AddPolicy(corsPolicyName, policy =>
 				{
 					policy
-						.WithOrigins("http://localhost:5173", "http://localhost:4173", "http://localhost:8080")
+						.WithOrigins(
+							"http://localhost:5173",
+							"http://localhost:4173",
+							"http://localhost:8080",
+							"https://memowords-buey5.ondigitalocean.app"
+						)
 						.AllowAnyHeader()
 						.AllowAnyMethod();
 				});
