@@ -27,7 +27,7 @@ namespace MemoWords.Api
 				options.AddPolicy(corsPolicyName, policy =>
 				{
 					policy
-						.WithOrigins("http://localhost:5173", "http://localhost:4173")
+						.WithOrigins("http://localhost:5173", "http://localhost:4173", "http://localhost:8080")
 						.AllowAnyHeader()
 						.AllowAnyMethod();
 				});
