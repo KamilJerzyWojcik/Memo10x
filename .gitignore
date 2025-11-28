@@ -78,3 +78,5 @@ memo-words/e2e/.auth/storageState.json
 docker-dev.sh
 docker-build.sh
 configs/
+memo-words/.env-docker
+memo-words/e2e/.auth/storageState.json
